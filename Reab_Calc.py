@@ -58,7 +58,7 @@ def ko_data(n,gi,gj,A,nj):
             ko = ko_calc(a,b,c,d)
                 #for i in range(len(n1s4)):
                  #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
-            datafile.write("%7.2e %3.1f %3.1f %7.2e %7.2e %7.2e\n" % (a,b,c,d,e,ko))
+            datafile.write("%7.2e %3.1f %3.1f %7.2e %7.2e %7.2e\n" % (a,d,c,b,e,ko))
                     #np.append(arr,arr_k,axis=1)
         
         print("")                
@@ -73,10 +73,10 @@ def ko_data(n,gi,gj,A,nj):
 #os.rename("line_data3.txt", "line_data_full.txt")                                                            
 #os.rename("k_oresults.txt", time.strftime("Ko_%Y%m%d%H%M.txt")) 
 
-#ko_data(n_ij,A,g_i,g_j,n_j)
+#ko_data(n_ij,g_i,g_j,A,n_j)
     
-#df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o'],comment="#")
-#df.to_csv('testing.csv',sep=';',index=False)
+df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o'],comment="#")
+df.to_csv('testing.csv',sep=';',index=False)
 
 
         

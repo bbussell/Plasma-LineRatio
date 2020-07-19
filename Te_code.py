@@ -220,8 +220,10 @@ def chi_squared(LRm,LRe,err):
 #with open("Te_intervals.txt", "r") as TeFile:
  
 #Extract data and declare variables
-T = np.loadtxt("Te_Intervals.txt", unpack=True,
-                      usecols=(0))
+#T = np.loadtxt("Te_Intervals.txt", unpack=True,
+                      #usecols=(0))
+#testing T values
+T = [3.5,8]
 print("The Te values being modelled are:")
 print(T)
 
@@ -274,7 +276,8 @@ for a in T:
     #print("%8.2e" % sum_nk(kG_795,a,alphaG_795,EG_795,kM_795,alphaM_795,EM_795,kR_795,alphaR_795,ER_795))
     
     #-----------------------------------   
-    
+    print('For an electron temperature of Te=',a)
+    print('')
     R_lam, Rad = np.genfromtxt("Rad_TrapCoeff.csv", delimiter=';', unpack=True, skip_header=1, usecols=(0,1))
     
     R_750 = Rad[0]
@@ -330,7 +333,7 @@ for a in T:
          #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
         te_results.write("%4.2f %5.2f %5.2f %5.2f %5.2f %5.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum))
         
-    with open("LR_results.txt", 'w+') as lr_results:
+    with open("LR_results.txt", 'a+') as lr_results:
         lr_results.write("%4.2f %5.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n" % (a,LR_738,Exp_738,LR_763,Exp_763,LR_772,Exp_772,LR_794,Exp_794))
             
 Chi_df=pd.read_csv("te_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum'],comment="#")

@@ -62,7 +62,7 @@ def radtrap(n,A,gi,gj,nj):
     print("Calculating absorption coefficients...")
     print("Fetching ko data from Reab_Calc.py")
     
-    RC.ko_data(n,A,gi,gj,nj)
+    RC.ko_data(n,gi,gj,A,nj)
     
     df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o'],comment="#")
     df.to_csv('line_data_full.csv',sep=';',index=False)
@@ -145,9 +145,10 @@ def radtrap(n,A,gi,gj,nj):
      #   for a, b in zip(Rad_lam_arr, Rad_arr):
       #      datafile.write("%3.1f %7.2e\n" % (a,b))
     
-    return R_750, R_772_4, R_738, R_794, R_751, R_763, R_772_3
+    return Rad
+    #return R_750, R_772_4, R_738, R_794, R_751, R_763, R_772_3
     
-#radtrap(n_ij,A,g_i,g_j,n_j)
+radtrap(n_ij,A,g_i,g_j,n_j)
 
 #print(R_list)
 #print("")
