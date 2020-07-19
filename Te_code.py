@@ -150,6 +150,41 @@ kR_795 = 5.15E-8
 alphaR_795 = 0.01
 ER_795 = 2.02
         
+#Function for caluclation of Excitation rates
+#k=k_o, T=electron temperature, a=
+
+def ex_rates(k,T,a,E):
+    return k*((T)**a)*exp(-E/T)
+#test of excitation rates
+
+#def test_answer():
+ #   assert ex_rates(kG_738,3.5,alphaG_738,EG_738) == 6.52E-12
+
+def sum_nk(k,T,a,E,km,am,Em,kr,ar,Er):
+    return n_g*ex_rates(k,T,a,E) + n_m*ex_rates(km,T,am,Em) +  n_r*ex_rates(kr,T,ar,Er)
+
+def k_o(lamda,gi,gj,Aij):  
+    term1 = ((lamda*(1E-7))**3)/(8*(np.pi**(1.5)))
+    #print("term 1 =",term1)
+    term2 = gi/gj
+    #print("term 2 =", term2)    
+    term3 = Aij*(sqrt(M))/((sqrt(2)*(sqrt(R))))
+    #print("term 3 =", term3)    
+    result = term1*term2*term3    
+    #arr_k = np.array(result)    
+    return result
+
+#Function for caluclation of reabsorption coefficients
+#For use in radiation trapping term Rij
+
+def reabs_coeff(k,n):
+    return k*n*(T_g**-0.5)
+
+#Function for calculation of escape factors
+
+def escape_factor(k,n,p):
+    return (2-exp(-reabs_coeff(k,n)*p/1000))/(1+(reabs_coeff(k,n)*p))
+        
 #Function for calculation of Model Line Ratios
 
 n_ij, A, g_i, g_j, n_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';', skiprows=2, unpack=True, 
@@ -164,6 +199,8 @@ def sum_750(T):
 def LR_mod(k,T,a,E,km,am,Em,kr,ar,Er,Rij,Rmn):
     LR = (Rij/Rmn)*((sum_nk(k,T,a,E,km,am,Em,kr,ar,Er)/sum_750(T)))
     return LR
+    
+#-------------------------------------------------------
     
 #-------------------------------------------------------
 
