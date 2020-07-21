@@ -20,7 +20,7 @@ g_i_738 = 5
 g_j_738 = 3
 
 lamda_738_ls = [738.4]
-A_738_ls = [847000]
+A_738_ls = [8470000]
 g_i_738_ls = [5]
 g_j_738_ls = [3]
 n_r_ls = [12000000000.0]
@@ -54,13 +54,15 @@ def test_reabs_coeff():
 def test_escape_factor():
     assert escape_factor(k_o(lamda_738,g_i_738,g_j_738,A_738),1.2E10,p) == 0.094466606
     
-def test_tcode():
+def test_rcode738():
     Rad738 = Rad[2]
-    assert Rad[2] == 1.277
+    assert Rad738 == 1.277
     #Rad == [0.949336776,0.701471798,1.277025826,0.673757912,1,0.492865753,0.653786693]
     
-def test_rcode():
-    R_738 == 1.277
+def test_rcode772():
+    Rad772 = Rad[1] 
+    assert Rad772 == 0.701471798
+
 
 
 
