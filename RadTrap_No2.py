@@ -78,10 +78,15 @@ def radtrap(n,A,gi,gj,nj):
     #2p1
     
     #with open("RadTrap_Coeff.csv","w+") as radfile:
+    
+    print("The escape factor for 738 is:",escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p))
+    print("The escape factor x Afor 738 is:",escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p)*(df.at[7,"A"] + 
+             df.at[6,"A"]+df.at[8,"A"]))
         
     R_750 = (((escape_factor(df.at[0,"k_o"],df.at[0,"n_j"],p))*((df.at[0,"A"]) + 
              df.at[1,"A"])))/(((escape_factor(df.at[0,"k_o"],df.at[0,"k_o"],p))*df.at[0,"A"]) + 
                   (escape_factor(df.at[1,"k_o"],df.at[1,"n_j"],p))*df.at[1,"A"])
+                              
     #print(R_750)
     
     #2p2
@@ -145,7 +150,9 @@ def radtrap(n,A,gi,gj,nj):
      #   for a, b in zip(Rad_lam_arr, Rad_arr):
       #      datafile.write("%3.1f %7.2e\n" % (a,b))
     
-    return Rad
+    print(df)
+    
+    return Rad, df
     #return R_750, R_772_4, R_738, R_794, R_751, R_763, R_772_3
     
 radtrap(n_ij,A,g_i,g_j,n_j)

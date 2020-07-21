@@ -347,7 +347,7 @@ os.rename("te_results.txt", time.strftime("te_results"+param+"_%Y%m%d%H%M%S.txt"
 
 Te, chi_s = np.genfromtxt("te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,5))
 
-Te_l=lst = list(Te)
+#Te_l_lst = list(Te)
 chi_s_lst = list(chi_s)
 
 min_pos = chi_s_lst.index(min(chi_s_lst))
