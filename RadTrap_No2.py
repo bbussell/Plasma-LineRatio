@@ -151,8 +151,8 @@ def radtrap(n,A,gi,gj,nj):
      #   for a, b in zip(Rad_lam_arr, Rad_arr):
       #      datafile.write("%3.1f %7.2e\n" % (a,b))
     
-    print(df)
-    print(df2)
+    #print(df)
+    #print(df2)
     #print(EF_all)
     
     return Rad, df
@@ -167,7 +167,7 @@ print(df)
 EF_all=[escape_factor(df.at[0,"k_o"],df.at[0,"n_j"],p),escape_factor(df.at[3,"k_o"],df.at[3,"n_j"],p),escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p),escape_factor(df.at[10,"k_o"],df.at[10,"n_j"],p),escape_factor(df.at[12,"k_o"],df.at[12,"n_j"],p),escape_factor(df.at[14,"k_o"],df.at[14,"n_j"],p),escape_factor(df.at[17,"k_o"],df.at[17,"n_j"],p)]
 
 #a = EF_all
-print(EF_all)
+#print(EF_all)
 
 #print(R_list)
 #print("")

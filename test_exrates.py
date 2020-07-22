@@ -13,14 +13,15 @@ from Te_code import p, kG_738, alphaG_738, EG_738, kM_738, alphaM_738,EM_738,kR_
 #from Te_code import RF_all
 from RadTrap_No2 import radtrap
 from RadTrap_No2 import EF_all
+import pandas as pd
 #import Te_code.py as T_code
 
 
 lamda_738 = 738.4
 
 A_738 = 8470000
-g_i_738 = 5
-g_j_738 = 3
+g_i_738 = 5.0
+g_j_738 = 3.0
 
 lamda_738_ls = [738.4]
 A_738_ls = [8470000]
@@ -71,6 +72,32 @@ def test_escape_df():
     print("EF_all =",EF_all)
     E738 = EF_all[2]
     assert E738 == 0.094466606
+
+df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o'],comment="#")
+                                                               
+def test_escape_readdata(): #passed on 22/07/20
+    lam_738 = df.at[7,"Wavelength (nm)"]
+    print("escape factor test - df")
+    assert lam_738 == lamda_738
+    
+def test_escape_readdata2(): #passed on 22/07/20
+    assert df.at[7,"A"] == A_738
+    
+def test_escape_readdata3(): #passed on 22/07/20
+    assert df.at[7,"g_i"] == g_i_738
+    
+def test_escape_readdata4(): #passed on 22/07/20
+    assert df.at[7,"g_j"] == g_j_738
+    
+def test_escape_readdata5(): #passed on 22/07/20
+    assert df.at[7,"n_j"] == n_r
+    
+def test_escape_readdata6():
+    assert df.at[7,"k_o"] == 1.98E-09
+
+    
+    
+                                                                
 
 
 
