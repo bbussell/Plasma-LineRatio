@@ -73,7 +73,7 @@ def ko_data(n,gi,gj,A,nj):
 #os.rename("line_data3.txt", "line_data_full.txt")                                                            
 #os.rename("k_oresults.txt", time.strftime("Ko_%Y%m%d%H%M.txt")) 
 
-ko_data(n_ij,g_i,g_j,A,n_j)
+#ko_data(n_ij,g_i,g_j,A,n_j)
     
 df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o'],comment="#")
 df.to_csv('testing.csv',sep=';',index=False)
