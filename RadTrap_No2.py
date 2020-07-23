@@ -57,6 +57,13 @@ def LR_mod(k,T,a,E,km,am,Em,kr,ar,Er,Rij,Rmn):
 
 n_ij, A, g_i, g_j, n_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';', skiprows=2, unpack=True, 
                                         usecols=(0,1,2,3,4))
+
+#R738 = ((escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p))*(df.at[7,"A"] + 
+#             df.at[6,"A"]+df.at[8,"A"]))/(((escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p))*df.at[7,"A"]) + 
+#                  ((escape_factor(df.at[6,"k_o"],df.at[6,"n_j"],p))*df.at[6,"A"]) +
+#                  (escape_factor(df.at[8,"k_o"],df.at[8,"n_j"],p)*df.at[8,"A"]))
+
+
 def radtrap(n,A,gi,gj,nj):
     
     print("Calculating absorption coefficients...")
@@ -64,7 +71,7 @@ def radtrap(n,A,gi,gj,nj):
     
     RC.ko_data(n,gi,gj,A,nj)
     
-    df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o'],comment="#")
+    df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o','k_ij'],comment="#")
     df.to_csv('line_data_full.csv',sep=';',index=False)
     
     print("Absorption coefficients calculated.")
@@ -80,7 +87,7 @@ def radtrap(n,A,gi,gj,nj):
     #with open("RadTrap_Coeff.csv","w+") as radfile:
     
     print("The escape factor for 738 is:",escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p))
-    print("The escape factor x Afor 738 is:",escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p)*(df.at[7,"A"] + 
+    print("g*A for 738 is:",escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p)*(df.at[7,"A"] + 
              df.at[6,"A"]+df.at[8,"A"]))
         
     R_750 = (((escape_factor(df.at[0,"k_o"],df.at[0,"n_j"],p))*((df.at[0,"A"]) + 
@@ -158,13 +165,13 @@ def radtrap(n,A,gi,gj,nj):
     return Rad, df
     #return R_750, R_772_4, R_738, R_794, R_751, R_763, R_772_3
     
-radtrap(n_ij,A,g_i,g_j,n_j)
+#radtrap(n_ij,A,g_i,g_j,n_j)
 
 df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o'],comment="#")
                                                                
-print(df)
+#print(df)
                                                                
-EF_all=[escape_factor(df.at[0,"k_o"],df.at[0,"n_j"],p),escape_factor(df.at[3,"k_o"],df.at[3,"n_j"],p),escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p),escape_factor(df.at[10,"k_o"],df.at[10,"n_j"],p),escape_factor(df.at[12,"k_o"],df.at[12,"n_j"],p),escape_factor(df.at[14,"k_o"],df.at[14,"n_j"],p),escape_factor(df.at[17,"k_o"],df.at[17,"n_j"],p)]
+#EF_all=[escape_factor(df.at[0,"k_ij"],df.at[0,"n_j"],p),escape_factor(df.at[3,"k_ij"],df.at[3,"n_j"],p),escape_factor(df.at[7,"k_ij"],df.at[7,"n_j"],p),escape_factor(df.at[10,"k_ij"],df.at[10,"n_j"],p),escape_factor(df.at[12,"k_ij"],df.at[12,"n_j"],p),escape_factor(df.at[14,"k_ij"],df.at[14,"n_j"],p),escape_factor(df.at[17,"k_ij"],df.at[17,"n_j"],p)]
 
 #a = EF_all
 #print(EF_all)
