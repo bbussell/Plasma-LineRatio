@@ -38,34 +38,32 @@ def ko_calc(lamda,gi,gj,Aij):
     
     return result 
 
-def ko_data(n,gi,gj,A,nj):
+# def ko_data(n,gi,gj,A,nj):
 
-    with open("line_data_full.txt","w+") as datafile:
-    #datafile = open('line_data_full.txt', 'w+')
+#     with open("line_data_full.txt","w+") as datafile:
+#     #datafile = open('line_data_full.txt', 'w+')
     
-        for a, b, c, d, e in zip(n,A,gi,gj,nj):
+#         for a, b, c, d, e in zip(n,A,gi,gj,nj):
         
-            #print("----------------------")
-            #print("For spectral line n_ij =", a, "nm")
-            #print("Where g_i =", b)
-            #print("and g_j=", c)
-            #print("n_j =", "%5.2e" % d)
-            #print("And Aij =", "%5.2e" % d)
-            #print("k_o = ", "%7.2e" % ko_calc(a,b,c,d))
-            ko = ko_calc(a,b,c,d)
-            k_ij = ko*e*((T_g)**0.5)
+#             #print("----------------------")
+#             #print("For spectral line n_ij =", a, "nm")
+#             #print("Where g_i =", b)
+#             #print("and g_j=", c)
+#             #print("n_j =", "%5.2e" % d)
+#             #print("And Aij =", "%5.2e" % d)
+#             #print("k_o = ", "%7.2e" % ko_calc(a,b,c,d))
+#             ko = ko_calc(a,b,c,d)
+#             k_ij = ko*e*((T_g)**0.5)
 
-            print("for lamda = ", a, "ko = ", ko,"k_ij = ", k_ij)
-                #for i in range(len(n1s4)):
-                 #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
-            datafile.write("%6.2f %3.0f %3.1f %3.1f %7.2e %7.2e %7.5f\n" % (a,b,c,d,e,ko,k_ij))
-                    #np.append(arr,arr_k,axis=1)       
-        print("")                
-        print("Calculated reabsorption coeffients an printed to file:line_data_full.txt")
+#             print("for lamda = ", a, "ko = ", ko,"k_ij = ", k_ij)
+#                 #for i in range(len(n1s4)):
+#                  #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
+#             datafile.write("%6.2f %3.0f %3.1f %3.1f %7.2e %7.2e %7.5f\n" % (a,b,c,d,e,ko,k_ij))
+#                     #np.append(arr,arr_k,axis=1)       
+#         print("")                
+#         print("Calculated reabsorption coeffients an printed to file:line_data_full.txt")
         
-    return ko
-        
-    #datafile.close()
+    #return ko
     
     #n_ij, A, g_i, g_j, n_j, ko = np.loadtxt("line_data_full.txt", comments='#', delimiter=' ', unpack=True, 
      #                              usecols=(0,1,2,3,4,5))    
@@ -81,24 +79,29 @@ n_ij, A, g_i, g_j, n_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';
 #g_j = [3.0,3.0]
 #nj = [1.20E10,1.20E10]
 
-print("!!!!!!!!!!!!! TESTING !!!!!!!!!!!!!!")
-print ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+#print("!!!!!!!!!!!!! TESTING !!!!!!!!!!!!!!")
+#print ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 #print("ko data with 750 and 738")
 #print(ko_data(n_ij,g_i,g_j,A,nj))
-with open("line_data_full.txt","w+") as datafile:
-    
-    for a, b, c, d, e in zip(n_ij,g_i,g_j,A,n_j):
-        print("ko for ", a, "nm is: ",ko_calc(a,b,c,d))
-        ko = ko_calc(a,b,c,d) 
-        kij = ko*e*((T_g)**(-0.5))
-        print( " and kij = ", kij)
-        print(" ")
+
+def reab_coeff_calc(n,gi,gj,A,nj):
+        with open("line_data_full.txt","w+") as datafile:
         
-        datafile.write("%6.2f %3.0f %3.1f %3.1f %7.2e %7.2e %7.5f \n" % (a,b,c,d,e,ko,kij))
+            for a, b, c, d, e in zip(n_ij,g_i,g_j,A,n_j):
+                print("ko for ", a, "nm is: ",ko_calc(a,b,c,d))
+                ko = ko_calc(a,b,c,d) 
+                kij = ko*e*((T_g)**(-0.5))
+                print( " and kij = ", kij)
+                print(" ")
+                
+                datafile.write("%6.2f %1.0f %1.0f %5.2e %7.2e %7.2e %7.5f \n" % (a,b,c,d,e,ko,kij))
     
-print("")
-print("ko and kij calculated and printed to file.")
+#reab_coeff_calc(n_ij, g_i, g_j, A, n_j)
+
+#print("")
+#print("ko and kij calculated and printed to file.")
+
     
 
 # print("g_i 738 =",g_i[7],"g_j_738= ",g_j[7])
@@ -117,8 +120,8 @@ print("ko and kij calculated and printed to file.")
 
 #ko_data(n_ij,g_i,g_j,A,n_j)
     
-dfd=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o', 'k_ij'],comment="#")
-dfd.to_csv('line_data_full.csv',sep=';',index=False)
+#dfd=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','g_i','g_j','A','n_j','k_o', 'k_ij'],comment="#")
+#dfd.to_csv('line_data_full.csv',sep=';',index=False)
 
 
         

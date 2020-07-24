@@ -11,7 +11,7 @@ import pandas as pd
 import csv
 import os
 import time
-import Reab_Calc as RC
+from Reab_Calc import reab_coeff_calc
 
 from datetime import datetime
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
@@ -69,11 +69,15 @@ def radtrap(n,A,gi,gj,nj):
     print("Calculating absorption coefficients...")
     print("Fetching ko data from Reab_Calc.py")
     
-    RC.ko_data(n,gi,gj,A,nj)
+    reab_coeff_calc(n, gi, gj, A, nj)
     
-    df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o','k_ij'],comment="#")
+    print("")
+    print("ko and kij calculated and printed to file.")
+    
+    df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','g_i','g_j','A','n_j','k_o','k_ij'],usecols=(0,1,2,3,4,5,6),comment="#")
     df.to_csv('line_data_full.csv',sep=';',index=False)
     
+    print(" ")
     print("Absorption coefficients calculated.")
     
     #with open("k_oresults.txt","r") as f:
@@ -85,7 +89,7 @@ def radtrap(n,A,gi,gj,nj):
     #2p1
     
     #with open("RadTrap_Coeff.csv","w+") as radfile:
-    
+    print(" ")
     print("The escape factor for 738 is:",escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p))
     print("g*A for 738 is:",escape_factor(df.at[7,"k_o"],df.at[7,"n_j"],p)*(df.at[7,"A"] + 
              df.at[6,"A"]+df.at[8,"A"]))
@@ -149,6 +153,7 @@ def radtrap(n,A,gi,gj,nj):
     Rad_arr = np.array(Rad)
     Rad_lam_arr = np.array(R_lam)
     
+    print(" ")
     df2 = pd.DataFrame(list(zip(R_lam,Rad)),columns=["Wavelength","Radation Trapping Coefficient"])
     df2.to_csv(r'Rad_TrapCoeff.csv', sep=';', index = False)
     print("Radiation trapping coefficients, along with their corresponding ")
@@ -161,13 +166,14 @@ def radtrap(n,A,gi,gj,nj):
     #print(df)
     #print(df2)
     #print(EF_all)
+    print(df)
     
     return Rad, df
     #return R_750, R_772_4, R_738, R_794, R_751, R_763, R_772_3
     
-#radtrap(n_ij,A,g_i,g_j,n_j)
+radtrap(n_ij,A,g_i,g_j,n_j)
 
-df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o'],comment="#")
+#df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_o'],comment="#")
                                                                
 #print(df)
                                                                
