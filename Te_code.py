@@ -36,7 +36,6 @@ n_g = 6E13 #PP_pa/(Kb*T_g)
 n_m = 3.9E10 #n1s5
 n_r = 1.2E10 #n1s4
 
-
 #0.5kW RFPowerTopView004
 
 #I_360 = 13.61 for n_e determination
