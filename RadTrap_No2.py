@@ -76,7 +76,7 @@ def radtrap(n,A,gi,gj,nj):
     print("ko and kij calculated and printed to file.")
     
     df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','g_i','g_j','A','n_j','k_o','k_ij'],usecols=(0,1,2,3,4,5,6),comment="#")
-    df.to_csv('line_data_full.csv',sep=';',index=False)
+    df.to_csv('line_data_full.csv',sep=';',index=True)
     
     print(" ")
     print("Absorption coefficients calculated.")
@@ -124,14 +124,17 @@ def radtrap(n,A,gi,gj,nj):
     #2p4
     
     R_794 = (((escape_factor(df.at[10,"k_ij"],df.at[10,"n_j"],p))*((df.at[10,"A"]) + 
-             df.at[9,"A"] + df.at[11,"A"])))/(((escape_factor(df.at[10,"k_ij"],df.at[10,"k_ij"],p))*df.at[10,"A"]) + 
+             df.at[9,"A"] + df.at[11,"A"] + df.at[12,"A"])))/(((escape_factor(df.at[10,"k_ij"],df.at[10,"n_j"],p))*df.at[10,"A"]) + 
                   ((escape_factor(df.at[9,"k_ij"],df.at[9,"n_j"],p))*df.at[9,"A"]) + 
-                  ((escape_factor(df.at[11,"k_ij"],df.at[11,"n_j"],p))*df.at[11,"A"]))
+                  ((escape_factor(df.at[11,"k_ij"],df.at[11,"n_j"],p))*df.at[11,"A"]) + escape_factor(df.at[12,"k_ij"],df.at[12,"n_j"],p))
     #print(R_794)
     
     #2p5
+                                                              
+                                                              
+    #UPDATE THESE BELOW.
     
-    R_751 = ((escape_factor(df.at[12,"k_ij"],df.at[12,"n_j"],p))*((df.at[12,"A"]))) / (((escape_factor(df.at[12,"k_ij"],df.at[12,"k_ij"],p))*df.at[12,"A"]))
+    R_751 = ((escape_factor(df.at[13,"k_ij"],df.at[13,"n_j"],p))*((df.at[13,"A"]))) + ((escape_factor(df.at[14,"k_ij"],df.at[14,"n_j"],p)) / (((escape_factor(df.at[13,"k_ij"],df.at[13,"k_ij"],p))*df.at[13,"A"]))
     #print(R_751)
     
     #2p6
