@@ -72,24 +72,33 @@ def ko_data(n,gi,gj,A,nj):
 
 #n_ij, A, g_i, g_j, n_j, ko, k_ij = np.loadtxt("line_data_full.txt", comments='#', delimiter=' ', unpack=True, 
                                    #usecols=(0,1,2,3,4,5,6))   
-#n_ij, A, g_i, g_j, n_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';', skiprows=2, unpack=True, 
-                                    #usecols=(0,1,2,3,4))
+n_ij, A, g_i, g_j, n_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';', skiprows=2, unpack=True, 
+                                    usecols=(0,1,2,3,4))
 
-n_ij = [750.39,667.73]
-A = [47200000,235000]
-g_i = [1.0,1.0]
-g_j = [3.0,3.0]
-nj = [1.20E10,1.20E10]
+#n_ij = [750.39,667.73]
+#A = [47200000,235000]
+#g_i = [1.0,1.0]
+#g_j = [3.0,3.0]
+#nj = [1.20E10,1.20E10]
 
+print("!!!!!!!!!!!!! TESTING !!!!!!!!!!!!!!")
+print ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
-print("ko data with 750 and 738")
+#print("ko data with 750 and 738")
 #print(ko_data(n_ij,g_i,g_j,A,nj))
-for a, b, c, d, e in zip(n_ij,g_i,g_j,A,nj):
-    print("ko for ", a, "nm is: ",ko_calc(a,b,c,d))
-    ko = ko_calc(a,b,c,d)
-    k_ij = ko*e*((T_g)**0.5) # minus missing 
-    kij = ko*e*((T_g)**(-0.5))
-    print( "and k_ij = ", k_ij, "new kij = ", kij)
+with open("line_data_full.txt","w+") as datafile:
+    
+    for a, b, c, d, e in zip(n_ij,g_i,g_j,A,n_j):
+        print("ko for ", a, "nm is: ",ko_calc(a,b,c,d))
+        ko = ko_calc(a,b,c,d) 
+        kij = ko*e*((T_g)**(-0.5))
+        print( " and kij = ", kij)
+        print(" ")
+        
+        datafile.write("%6.2f %3.0f %3.1f %3.1f %7.2e %7.2e %7.5f \n" % (a,b,c,d,e,ko,kij))
+    
+print("")
+print("ko and kij calculated and printed to file.")
     
 
 # print("g_i 738 =",g_i[7],"g_j_738= ",g_j[7])
@@ -102,12 +111,6 @@ for a, b, c, d, e in zip(n_ij,g_i,g_j,A,nj):
 #testing
 #k738 = ko[7]*n_j[7]*(T_g**-0.5)
 #print("k738 =", k738)
-
-print("!!!!!!!!!!!!! TESTING !!!!!!!!!!!!!!")
-print ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-print("ko750 = ")
-print(ko_calc(750.39,1.0,3.0,47200000))
     
 #os.rename("line_data3.txt", "line_data_full.txt")                                                            
 #os.rename("k_oresults.txt", time.strftime("Ko_%Y%m%d%H%M.txt")) 
