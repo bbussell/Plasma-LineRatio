@@ -87,9 +87,8 @@ def radtrap(n,A,gi,gj,nj):
     
     #Calculation of radiation trapping coefficients for each upper level, taking into account all transitions to
     #the lower level of interest (with some minor exceptions)
-    #2p1
     
-    
+    #2p1 750.39, 667.73
     
     #with open("RadTrap_Coeff.csv","w+") as radfile:
     print(" ")
@@ -104,16 +103,18 @@ def radtrap(n,A,gi,gj,nj):
     print("R_750 is:")                        
     print(R_750)
     
-    #2p2
+    #2p2 826.45, 772.42, 727.29, 696.54
+
+    
     R_772_4 = (((escape_factor(df.at[3,"k_ij"],df.at[3,"n_j"],p))*(df.at[3,"A"] + 
-             df.at[2,"A"] + df.at[4,"A"] + 
-             df.at[5,"A"])))/(((escape_factor(df.at[3,"k_ij"],df.at[3,"k_ij"],p))*df.at[3,"A"]) + 
+             df.at[2,"A"] + df.at[4,"A"] + df.at[5,"A"])))/(((escape_factor(df.at[3,"k_ij"],df.at[3,"n_j"],p))*df.at[3,"A"]) + 
                   ((escape_factor(df.at[2,"k_ij"],df.at[2,"n_j"],p))*df.at[2,"A"]) + 
                   ((escape_factor(df.at[4,"k_ij"],df.at[4,"n_j"],p))*df.at[4,"A"]) + 
                   ((escape_factor(df.at[5,"k_ij"],df.at[5,"n_j"],p))*df.at[5,"A"]))
     #print(R_772_4)
     
-    #2p3
+    #2p3 840.82, 738.4, 706.72
+
     
     R_738 = ((escape_factor(df.at[7,"k_ij"],df.at[7,"n_j"],p))*(df.at[7,"A"] + 
              df.at[6,"A"]+df.at[8,"A"]))/(((escape_factor(df.at[7,"k_ij"],df.at[7,"n_j"],p))*df.at[7,"A"]) + 
@@ -121,7 +122,8 @@ def radtrap(n,A,gi,gj,nj):
                   (escape_factor(df.at[8,"k_ij"],df.at[8,"n_j"],p)*df.at[8,"A"]))
     #print(R_738)
     
-    #2p4
+    #2p4 852.14, 794.82, 747.12, 714.7
+
     
     R_794 = (((escape_factor(df.at[10,"k_ij"],df.at[10,"n_j"],p))*((df.at[10,"A"]) + 
              df.at[9,"A"] + df.at[11,"A"] + df.at[12,"A"])))/(((escape_factor(df.at[10,"k_ij"],df.at[10,"n_j"],p))*df.at[10,"A"]) + 
@@ -129,27 +131,29 @@ def radtrap(n,A,gi,gj,nj):
                   ((escape_factor(df.at[11,"k_ij"],df.at[11,"n_j"],p))*df.at[11,"A"]) + escape_factor(df.at[12,"k_ij"],df.at[12,"n_j"],p))
     #print(R_794)
     
-    #2p5
-                                                              
-                                                              
-    #UPDATE THESE BELOW.
-    
-    R_751 = ((escape_factor(df.at[13,"k_ij"],df.at[13,"n_j"],p))*((df.at[13,"A"]))) + ((escape_factor(df.at[14,"k_ij"],df.at[14,"n_j"],p)) / (((escape_factor(df.at[13,"k_ij"],df.at[13,"k_ij"],p))*df.at[13,"A"]))
-    #print(R_751)
-    
-    #2p6
-    
-    R_763 = (((escape_factor(df.at[14,"k_ij"],df.at[14,"n_j"],p))*(df.at[14,"A"] + 
+    #2p5 857.81, 751.47
+                                                                 
+    R_751 = (((escape_factor(df.at[14,"k_ij"],df.at[14,"n_j"],p))*(df.at[14,"A"] + 
              df.at[13,"A"])))/(((escape_factor(df.at[14,"k_ij"],df.at[14,"k_ij"],p))*df.at[14,"A"]) + 
                   (escape_factor(df.at[13,"k_ij"],df.at[13,"n_j"],p))*df.at[13,"A"])
+    #print(R_751)
+    
+    #2p6 992.45, 800.62, 763.51
+
+    
+    R_763 = (((escape_factor(df.at[17,"k_ij"],df.at[17,"n_j"],p))*(df.at[17,"A"] + 
+             df.at[15,"A"] + df.at[16,"A"])))/(((escape_factor(df.at[17,"k_ij"],df.at[17,"k_ij"],p))*df.at[17,"A"]) + 
+                  (escape_factor(df.at[15,"k_ij"],df.at[15,"n_j"],p))*df.at[15,"A"] + 
+                  ((escape_factor(df.at[16,"k_ij"],df.at[16,"n_j"],p))*df.at[16,"A"]))
     #print(R_763)
     
-    #2p7
+    #2p7 935.42, 866.79, 810.37, 772.38
     
-    R_772_3 = ((escape_factor(df.at[17,"k_ij"],df.at[17,"n_j"],p))*(df.at[17,"A"] + 
-             df.at[15,"A"]+df.at[16,"A"]))/(((escape_factor(df.at[17,"k_ij"],df.at[17,"n_j"],p))*df.at[17,"A"]) + 
-                  ((escape_factor(df.at[15,"k_ij"],df.at[15,"n_j"],p))*df.at[15,"A"]) +
-                  (escape_factor(df.at[16,"k_ij"],df.at[16,"n_j"],p)*df.at[16,"A"]))
+    R_772_3 = ((escape_factor(df.at[21,"k_ij"],df.at[21,"n_j"],p))*(df.at[21,"A"] + 
+             df.at[18,"A"] + df.at[19,"A"] + df.at[20,"A"]))/(((escape_factor(df.at[21,"k_ij"],df.at[21,"n_j"],p))*df.at[21,"A"]) + 
+                  ((escape_factor(df.at[18,"k_ij"],df.at[18,"n_j"],p))*df.at[18,"A"]) +
+                  (escape_factor(df.at[19,"k_ij"],df.at[19,"n_j"],p)*df.at[19,"A"]) + 
+                  (escape_factor(df.at[20,"k_ij"],df.at[20,"n_j"],p)*df.at[20,"A"]))
     #print(R_772_3)
     
     #print("")
@@ -173,7 +177,16 @@ def radtrap(n,A,gi,gj,nj):
     #print(df)
     #print(df2)
     #print(EF_all)
+    print(" ")
+    print(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print("The ko results are: ")
     print(df)
+    print(" ")
+    print("The RadTrap results are: ")
+    print(df2)
+    
+    
+    
     
     return Rad, df
     #return R_750, R_772_4, R_738, R_794, R_751, R_763, R_772_3
