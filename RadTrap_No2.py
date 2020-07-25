@@ -185,13 +185,46 @@ def radtrap(n,A,gi,gj,nj):
     print("The RadTrap results are: ")
     print(df2)
     
-    
-    
-    
     return Rad, df
     #return R_750, R_772_4, R_738, R_794, R_751, R_763, R_772_3
     
 radtrap(n_ij,A,g_i,g_j,n_j)
+
+#Writing escape factors for each line to file
+
+n_ij, g_i, g_j, A, n_j, ko, k_ij = np.loadtxt("line_data_full.txt", comments='#', delimiter=' ', unpack=True, 
+                                         usecols=(0,1,2,3,4,5,6))
+
+#csv_input = pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','g_i','g_j','A','n_j','k_o', 'k_ij'],comment="#")
+
+#csv_input['Radiation Trapping Coefficient'] = csv_input['Radiation Trapping Coefficient']
+#csv_input.to_csv('output.csv', index=False)
+
+with open("line_escape_factors.txt","w+") as datafile:
+    for a, b, c, d, e, f, g in zip(n_ij,g_i,g_j,A,n_j,ko,k_ij):
+        g_ij = escape_factor(g,e,p)
+        print("escape factor for ",a, "nm : ")
+        print(g_ij)
+        print("--------")
+        gA = g_ij*d
+        datafile.write("%6.2f %1.0f %1.0f %5.2e %7.2e %7.2e %7.5f %5.3f %3.5f \n" % (a,b,c,d,e,f,g,gA,g_ij))
+     
+n_ij, g_i, g_j, A, n_j, ko, k_ij, gA, g_ij = np.loadtxt("line_escape_factors.txt", comments='#', delimiter=' ', unpack=True, 
+                                         usecols=(0,1,2,3,4,5,6,7,8))
+print(" split arrays are:")
+newA = np.array_split(A,[1,4,7,11,13,16,])
+
+print("2p1 array = ", newA[0])
+print("2p2 array = ", newA[1])
+print("2p3 array = ", newA[2])
+print("2p4 array = ", newA[3])
+print("2p5 array = ", newA[4])
+print("2p6 array = ", newA[5])
+print("2p7 array = ", newA[6])
+
+        
+        # =(g*SUM(A))/(SUM(gA))
+    
 
 #df=pd.read_csv("line_data_full.txt",sep=" ",header=None,names=['Wavelength (nm)','A','g_i','g_j','n_j','k_ij'],comment="#")
                                                                
