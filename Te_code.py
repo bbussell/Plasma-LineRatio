@@ -20,7 +20,7 @@ datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 param = "1.5kW"
 
 Kb = 1.38E-23*(1E4) #boltzman constant
-T_g = 600 #757 = 15mtorr #gas temperature (K)
+T_g = 700 #757 = 15mtorr #gas temperature (K)
 p = 10 #charactersitic readsorption length (cm)
 #M = 9.109E-31
 M = 39.948# 6.6335209E-23 #kg
@@ -216,13 +216,11 @@ def chi_squared(LRm,LRe,err):
 #-------------------------------------------------------
 #Loading Te model data 
 
-#with open("Te_intervals.txt", "r") as TeFile:
- 
 #Extract data and declare variables
-#T = np.loadtxt("Te_Intervals.txt", unpack=True,
-                      #usecols=(0))
+T = np.loadtxt("Te_Intervals.txt", unpack=True,
+                      usecols=(0))
 #testing T values
-T = [3.5,8]
+#T = [3.5,8]
 print("The Te values being modelled are:")
 print(T)
 
@@ -309,7 +307,8 @@ for a in T:
     #print("The 794/750 line ratio is, ", LR_794, "for Te =", a)
     
     chi_sum = chi_squared(LR_738,Exp_738,0.05) + chi_squared(LR_763,Exp_763,0.05) + chi_squared(LR_772,Exp_772,0.1) + chi_squared(LR_794,Exp_794,0.1)
-    
+    print("")
+    print("chi_sum for T =", a,"is: ",chi_sum)
     print("738 model LR is: ", LR_738, "and experimental 738 LR is: ", Exp_738)
     chi_738 = chi_squared(LR_738,Exp_738,0.05)
     
@@ -330,7 +329,7 @@ for a in T:
     with open('Te_results.txt', 'a+') as te_results:
         #for i in range(len(n1s4)):
          #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
-        te_results.write("%4.2f %5.2f %5.2f %5.2f %5.2f %5.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum))
+        te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum))
         
     with open("LR_results.txt", 'a+') as lr_results:
         lr_results.write("%4.2f %5.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n" % (a,LR_738,Exp_738,LR_763,Exp_763,LR_772,Exp_772,LR_794,Exp_794))
@@ -341,12 +340,9 @@ Chi_df.to_csv('te_results.csv',sep=';',index=False)
 LR_df=pd.read_csv("LR_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Model LR','738 Exp LR','763 Model LR','763 Exp LR','772 Model LR','772 Exp LR','794 Model LR','794 Exp LR'],comment='#')
 LR_df.to_csv('LR_results.csv',sep=";",index=False)
             
-os.rename("te_results.txt", time.strftime("te_results"+param+"_%Y%m%d%H%M%S.txt")) 
-#os.rename("te_results.csv", time.strftime("te_results"+param+"_%Y%m%d%H%M%S.txt"))
-
 Te, chi_s = np.genfromtxt("te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,5))
 
-#Te_l_lst = list(Te)
+Te_l_lst = list(Te)
 chi_s_lst = list(chi_s)
 
 min_pos = chi_s_lst.index(min(chi_s_lst))
@@ -358,7 +354,13 @@ final_time = time.time() - start_time
 
 print("This program took", "%5.3f" %  final_time,"s to run")
 
-os.remove("te_results.csv")
+os.rename("te_results.txt", time.strftime("te_results"+param+"_%Y%m%d%H%M%S.txt")) 
+os.rename("te_results.csv", time.strftime("te_results"+param+"_%Y%m%d%H%M%S.csv"))
+
+os.rename("LR_results.txt", time.strftime("LR_results"+param+"_%Y%m%d%H%M%S.txt")) 
+os.rename("LR_results.csv", time.strftime("LR_results"+param+"_%Y%m%d%H%M%S.csv"))
+
+#os.remove("te_results.csv")
                 
         
           
