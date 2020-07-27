@@ -19,13 +19,16 @@ datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
 param = "1.5kW"
 
+
 Kb = 1.38E-23*(1E4) #boltzman constant
-T_g = 700 #757 = 15mtorr #gas temperature (K)
+T_g = 600 #757 = 15mtorr #gas temperature (K)
 p = 10 #charactersitic readsorption length (cm)
 #M = 9.109E-31
 M = 39.948# 6.6335209E-23 #kg
 #M = 6.6335209E-26 #atomic mass of Ar(kg)
 R = 8.31446261815324*(1E4)
+
+Tg = str(T_g)
 
 
 PP_mbar = 0.0050 #argon partial pressure in mbar
@@ -48,11 +51,11 @@ n_r = 1.2E10 #n1s4
 
 #3.0kW irradiance (integrated irradiance calculated from spectrum analyser)
 #Note, checked these twice to ensure they were correct
-#I_738 = 221.63
-#I_763 = 622.25 
-#I_750 = 599.88  
-#I_772 = 277.20 #(772.38)
-#I_794 = 310.63  
+# I_738 = 221.63
+# I_763 = 622.25 
+# I_750 = 599.88  
+# I_772 = 277.20 #(772.38)
+# I_794 = 310.63  
 
 #1.5kW irradiance (integrated)
 I_738 = 199.16
@@ -62,11 +65,11 @@ I_772 = 240.35
 I_794 = 249.30
 
 #0.5kW irradiance (integrated)
-#I_738 = 98.36
-#I_763 = 234.89
-#I_750 = 264.55
-#I_772 = 111.54
-#I_794 = 108.44
+# I_738 = 98.36
+# I_763 = 234.89
+# I_750 = 264.55
+# I_772 = 111.54
+# I_794 = 108.44
 
 Exp_738 = I_738/I_750
 Exp_763 = I_763/I_750
@@ -354,11 +357,11 @@ final_time = time.time() - start_time
 
 print("This program took", "%5.3f" %  final_time,"s to run")
 
-os.rename("te_results.txt", time.strftime("te_results"+param+"_%Y%m%d%H%M%S.txt")) 
-os.rename("te_results.csv", time.strftime("te_results"+param+"_%Y%m%d%H%M%S.csv"))
+os.rename("te_results.txt", time.strftime("te_results"+param+Tg+"K_%Y%m%d%H%M%S.txt")) 
+os.rename("te_results.csv", time.strftime("te_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
 
-os.rename("LR_results.txt", time.strftime("LR_results"+param+"_%Y%m%d%H%M%S.txt")) 
-os.rename("LR_results.csv", time.strftime("LR_results"+param+"_%Y%m%d%H%M%S.csv"))
+os.rename("LR_results.txt", time.strftime("LR_results"+param+Tg+"_%Y%m%d%H%M%S.txt")) 
+os.rename("LR_results.csv", time.strftime("LR_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
 
 #os.remove("te_results.csv")
                 
