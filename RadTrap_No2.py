@@ -188,7 +188,7 @@ def radtrap(n,A,gi,gj,nj):
     return Rad, df
     #return R_750, R_772_4, R_738, R_794, R_751, R_763, R_772_3
     
-radtrap(n_ij,A,g_i,g_j,n_j)
+#radtrap(n_ij,A,g_i,g_j,n_j)
 
 #Writing escape factors for each line to file
 

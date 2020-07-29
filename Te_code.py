@@ -11,13 +11,18 @@ import pandas as pd
 import csv
 import os
 import time
-import RadTrap_No2 as RT # import rad trap code and run
+#import RadTrap_No2 as RT # import rad trap code and run
+from RadTrap_No2 import radtrap
 
 from datetime import datetime
 start_time = time.time()
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
-param = "1.5kW"
+param = input("What RF Power is this assessment for? Please respond and press Enter")
+
+print("Thank you. The RF Power you are about to evaluate is: ",param)
+
+"2.25kW"
 
 
 Kb = 1.38E-23*(1E4) #boltzman constant
@@ -39,37 +44,83 @@ n_g = 6E13 #PP_pa/(Kb*T_g)
 n_m = 3.9E10 #n1s5
 n_r = 1.2E10 #n1s4
 
-#0.5kW RFPowerTopView004
-
-#I_360 = 13.61 for n_e determination
-#I_383 = 25.42 for n_e determination
-#I_738 = 4051.31
-#I_763 = 7209.19 
-#I_750 = 8980.17  
-#I_772 = 2532.46
-#I_794 = 1979.53 #I_794 = 4595.85  
-
 #3.0kW irradiance (integrated irradiance calculated from spectrum analyser)
 #Note, checked these twice to ensure they were correct
-# I_738 = 221.63
-# I_763 = 622.25 
-# I_750 = 599.88  
-# I_772 = 277.20 #(772.38)
-# I_794 = 310.63  
+#I_738 = 221.63
+#I_763 = 622.25 
+#I_750 = 599.88  
+#I_772 = 277.20 #(772.38)
+#I_794 = 310.63  
 
 #1.5kW irradiance (integrated)
-I_738 = 199.16
-I_763 = 484.74 
-I_750 = 505.74
-I_772 = 240.35
-I_794 = 249.30
+#I_738 = 199.16
+#I_763 = 484.74 
+#I_750 = 505.74 #convoluted with 751
+#I_772 = 240.35 #convoluted with 772.4
+#I_794 = 249.30 #convoluted with 
+
+##1.75kW irradiance (integrated)
+#I_738 = 211.17
+#I_763 = 513.14 
+#I_750 = 524.41 #convoluted with 751
+#I_772 = 257.01 #convoluted with 772.4
+#I_794 = 274.07 #convoluted with 
 
 #0.5kW irradiance (integrated)
-# I_738 = 98.36
-# I_763 = 234.89
-# I_750 = 264.55
-# I_772 = 111.54
-# I_794 = 108.44
+#I_738 = 98.36
+#I_763 = 234.89
+#I_750 = 264.55
+#I_772 = 111.54
+#I_794 = 108.44
+
+#2.0kW irradiance
+#I_738 = 214.45
+#I_763 = 539.18
+#I_750 = 542.25
+#I_772 = 260.90
+#I_794 = 283.11
+
+#1.25kW irradiance
+#I_738 = 185.81
+#I_763 = 456.89
+#I_750 = 485.91
+#I_772 = 221.06
+#I_794 = 229.24
+
+#1.0kW irradiance
+#I_738 = 136.37
+#I_763 = 334.03
+#I_750 = 365.05
+#I_772 = 157.12
+#I_794 = 156.79
+
+#2.25kW irradiance
+#I_738 = 226.84
+#I_763 = 598.35
+#I_750 = 569.33
+#I_772 = 276.99
+#I_794 = 305.49 
+
+#2.0kW irradiance
+#I_738 = 213.01
+#I_763 = 539.03
+#I_750 = 542.25
+#I_772 = 263.38
+#I_794 = 281.23 
+
+#Steering on2
+I_738 = 120.74
+I_763 = 374.76
+I_750 = 335.65
+I_772 = 143.14
+I_794 = 153.65 
+
+#Steering off2
+#I_738 = 129.80
+#I_763 = 379.21
+#I_750 = 362.68
+#I_772 = 149.52
+#I_794 = 157.86 
 
 Exp_738 = I_738/I_750
 Exp_763 = I_763/I_750
