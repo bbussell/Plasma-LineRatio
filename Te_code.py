@@ -18,12 +18,9 @@ from datetime import datetime
 start_time = time.time()
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
-param = input("What RF Power is this assessment for? Please respond and press Enter")
+param = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
 
 print("Thank you. The RF Power you are about to evaluate is: ",param)
-
-"2.25kW"
-
 
 Kb = 1.38E-23*(1E4) #boltzman constant
 T_g = 600 #757 = 15mtorr #gas temperature (K)
@@ -73,6 +70,14 @@ n_r = 1.2E10 #n1s4
 #I_772 = 111.54
 #I_794 = 108.44
 
+#0.75Kw 
+I_738 = 142.25
+I_763 = 338.90
+I_750 = 368.41
+I_772 = 159.05
+I_794 = 157.88
+
+
 #2.0kW irradiance
 #I_738 = 214.45
 #I_763 = 539.18
@@ -94,6 +99,14 @@ n_r = 1.2E10 #n1s4
 #I_772 = 157.12
 #I_794 = 156.79
 
+#1kW 2
+#I_738 = 103.57  
+#I_763 = 238.93 
+#I_750 = 267.81
+#I_772 = 114.52 
+#I_794 = 110.48
+
+
 #2.25kW irradiance
 #I_738 = 226.84
 #I_763 = 598.35
@@ -108,12 +121,33 @@ n_r = 1.2E10 #n1s4
 #I_772 = 263.38
 #I_794 = 281.23 
 
+#2.5Kw 
+#I_738 = 235.56
+#I_763 = 616.60
+#I_750 = 586.86
+#I_772 = 278.72
+#I_794 = 306.34 
+
 #Steering on2
-I_738 = 120.74
-I_763 = 374.76
-I_750 = 335.65
-I_772 = 143.14
-I_794 = 153.65 
+#I_738 = 120.74
+#I_763 = 374.76
+#I_750 = 335.65
+#I_772 = 143.14
+#I_794 = 153.65 
+
+#0.0020
+#I_738 = 62.00
+#I_763 = 254.86
+#I_750 = 223.94 
+#I_772 = 79.37
+#I_794 = 89.58 
+
+#0.0050
+#I_738 = 120.01 
+#I_763 = 378.16
+#I_750 = 335.78
+#I_772 = 142.11
+#I_794 = 152.85 
 
 #Steering off2
 #I_738 = 129.80
@@ -243,7 +277,7 @@ def escape_factor(k,n,p):
 n_ij, A, g_i, g_j, n_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';', skiprows=2, unpack=True, 
                                         usecols=(0,1,2,3,4))
 
-RT.radtrap(n_ij,A,g_i,g_j,n_j)
+radtrap(n_ij,A,g_i,g_j,n_j)
 
 def sum_750(T):
     sum_750=sum_nk(kG_750,T,alphaG_750,EG_750,kM_750,alphaM_750,EM_750,kR_750,alphaR_750,ER_750)
