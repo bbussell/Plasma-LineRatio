@@ -29,54 +29,71 @@ p = 10 #charactersitic readsorption length (cm)
 M = 39.948# 6.6335209E-23 #kg
 #M = 6.6335209E-26 #atomic mass of Ar(kg)
 R = 8.31446261815324*(1E4)
-
 Tg = str(T_g)
 
+p_str = str(p)
+
+#!!!!!!!!!!!!!!!!!!!!!!!
+#Before running, ensure all parameters are correct. Especially:
+#Process Pressure, n_m, n_r
 
 PP_mbar = 0.0050 #argon partial pressure in mbar
 PP_pa = PP_mbar*100 #argon partial pressure in pascals
-n_g = 6E13 #PP_pa/(Kb*T_g)
+n_g = PP_pa/(Kb*T_g)#6E13 
 #n_m = 3.0E10
 #n_r = 9.3E9
 n_m = 3.9E10 #n1s5
-n_r = 1.2E10 #n1s4
+n_r = 1.2e10 #n1s4
+
+#0.0030
+# I_738 = 82.65
+# I_763 = 307.12 
+# I_750 = 272.35  
+# I_772 = 103.11 #(772.38)
+# I_794 = 114.69  
+
+#0.0040
+# I_738 = 103.28
+# I_763 = 344.74 
+# I_750 = 305.74  
+# I_772 = 122.41 #(772.38)
+# I_794 = 124.23  
 
 #3.0kW irradiance (integrated irradiance calculated from spectrum analyser)
 #Note, checked these twice to ensure they were correct
-#I_738 = 221.63
-#I_763 = 622.25 
-#I_750 = 599.88  
-#I_772 = 277.20 #(772.38)
-#I_794 = 310.63  
+# I_738 = 221.63
+# I_763 = 622.25 
+# I_750 = 599.88  
+# I_772 = 277.20 #(772.38)
+# I_794 = 310.63  
 
 #1.5kW irradiance (integrated)
-#I_738 = 199.16
-#I_763 = 484.74 
-#I_750 = 505.74 #convoluted with 751
-#I_772 = 240.35 #convoluted with 772.4
-#I_794 = 249.30 #convoluted with 
+# I_738 = 199.16
+# I_763 = 484.74 
+# I_750 = 505.74 #convoluted with 751
+# I_772 = 240.35 #convoluted with 772.4
+# I_794 = 249.30 #convoluted with 
 
 ##1.75kW irradiance (integrated)
-#I_738 = 211.17
-#I_763 = 513.14 
-#I_750 = 524.41 #convoluted with 751
-#I_772 = 257.01 #convoluted with 772.4
-#I_794 = 274.07 #convoluted with 
+# I_738 = 211.17
+# I_763 = 513.14 
+# I_750 = 524.41 #convoluted with 751
+# I_772 = 257.01 #convoluted with 772.4
+# I_794 = 274.07 #convoluted with 
 
 #0.5kW irradiance (integrated)
-#I_738 = 98.36
-#I_763 = 234.89
-#I_750 = 264.55
-#I_772 = 111.54
-#I_794 = 108.44
+# I_738 = 98.36
+# I_763 = 234.89
+# I_750 = 264.55
+# I_772 = 111.54
+# I_794 = 108.44
 
 #0.75Kw 
-I_738 = 142.25
-I_763 = 338.90
-I_750 = 368.41
-I_772 = 159.05
-I_794 = 157.88
-
+# I_738 = 142.25
+# I_763 = 338.90
+# I_750 = 368.41
+# I_772 = 159.05
+# I_794 = 157.88
 
 #2.0kW irradiance
 #I_738 = 214.45
@@ -86,18 +103,18 @@ I_794 = 157.88
 #I_794 = 283.11
 
 #1.25kW irradiance
-#I_738 = 185.81
-#I_763 = 456.89
-#I_750 = 485.91
-#I_772 = 221.06
-#I_794 = 229.24
+I_738 = 185.81
+I_763 = 456.89
+I_750 = 485.91
+I_772 = 221.06
+I_794 = 229.24
 
 #1.0kW irradiance
-#I_738 = 136.37
-#I_763 = 334.03
-#I_750 = 365.05
-#I_772 = 157.12
-#I_794 = 156.79
+# I_738 = 136.37
+# I_763 = 334.03
+# I_750 = 365.05
+# I_772 = 157.12
+# I_794 = 156.79
 
 #1kW 2
 #I_738 = 103.57  
@@ -106,27 +123,26 @@ I_794 = 157.88
 #I_772 = 114.52 
 #I_794 = 110.48
 
-
 #2.25kW irradiance
-#I_738 = 226.84
-#I_763 = 598.35
-#I_750 = 569.33
-#I_772 = 276.99
-#I_794 = 305.49 
+# I_738 = 226.84
+# I_763 = 598.35
+# I_750 = 569.33
+# I_772 = 276.99
+# I_794 = 305.49 
 
 #2.0kW irradiance
-#I_738 = 213.01
-#I_763 = 539.03
-#I_750 = 542.25
-#I_772 = 263.38
-#I_794 = 281.23 
+# I_738 = 213.01
+# I_763 = 539.03
+# I_750 = 542.25
+# I_772 = 263.38
+# I_794 = 281.23 
 
 #2.5Kw 
-#I_738 = 235.56
-#I_763 = 616.60
-#I_750 = 586.86
-#I_772 = 278.72
-#I_794 = 306.34 
+# I_738 = 235.56
+# I_763 = 616.60
+# I_750 = 586.86
+# I_772 = 278.72
+# I_794 = 306.34 
 
 #Steering on2
 #I_738 = 120.74
@@ -136,18 +152,18 @@ I_794 = 157.88
 #I_794 = 153.65 
 
 #0.0020
-#I_738 = 62.00
-#I_763 = 254.86
-#I_750 = 223.94 
-#I_772 = 79.37
-#I_794 = 89.58 
+# I_738 = 62.00
+# I_763 = 254.86
+# I_750 = 223.94 
+# I_772 = 79.37
+# I_794 = 89.58 
 
 #0.0050
-#I_738 = 120.01 
-#I_763 = 378.16
-#I_750 = 335.78
-#I_772 = 142.11
-#I_794 = 152.85 
+# I_738 = 120.01 
+# I_763 = 378.16
+# I_750 = 335.78
+# I_772 = 142.11
+# I_794 = 152.85 
 
 #Steering off2
 #I_738 = 129.80
@@ -305,10 +321,10 @@ def chi_squared(LRm,LRe,err):
 #Loading Te model data 
 
 #Extract data and declare variables
-T = np.loadtxt("Te_Intervals.txt", unpack=True,
-                      usecols=(0))
+#T = np.loadtxt("Te_Intervals.txt", unpack=True,
+#                      usecols=(0))
 #testing T values
-#T = [3.5,8]
+T = [3.5,8]
 print("The Te values being modelled are:")
 print(T)
 
@@ -319,6 +335,20 @@ print("The line ratios are:")
 #test
 #n1s4 =[1,2,3,4,5]
 #n1s5 = [10,20,30,40,50]
+
+with open('Te_results.txt', 'w') as resultsfile:
+    resultsfile.write('Electron Temperature Results\n')
+    resultsfile.write('Datetime (Y-M-S) = ' + datestring + '\n')
+    resultsfile.write('Experiment Name: ' + param + '\n')
+    resultsfile.write('Gas Temperature (K) = ' + Tg + '\n')
+    resultsfile.write('Characteristic length (cm) = '+ p_str + '\n')
+    
+with open('LR_results.txt', 'w') as resultsfile:
+    resultsfile.write('Electron Temperature Results - Raw Line Ratio Data\n')
+    resultsfile.write('Datetime (Y-M-S) = ' + datestring + '\n')
+    resultsfile.write('Experiment Name: ' + param + '\n')
+    resultsfile.write('Gas Temperature (K) = ' + Tg + '\n')
+    resultsfile.write('Characteristic length (cm) = '+ p_str + '\n')
 
 for a in T:
     #print("The ground, metastable and resonant excitation rate at 738nm, k, for T=",a," are:")
@@ -422,13 +452,13 @@ for a in T:
     with open("LR_results.txt", 'a+') as lr_results:
         lr_results.write("%4.2f %5.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n" % (a,LR_738,Exp_738,LR_763,Exp_763,LR_772,Exp_772,LR_794,Exp_794))
             
-Chi_df=pd.read_csv("te_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum'],comment="#")
-Chi_df.to_csv('te_results.csv',sep=';',index=False)
+Chi_df=pd.read_csv("Te_results.txt",sep=" ",names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum'],comment="#",skiprows=5)
+Chi_df.to_csv('Te_results.csv',sep=';',index=False)
 
-LR_df=pd.read_csv("LR_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Model LR','738 Exp LR','763 Model LR','763 Exp LR','772 Model LR','772 Exp LR','794 Model LR','794 Exp LR'],comment='#')
+LR_df=pd.read_csv("LR_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Model LR','738 Exp LR','763 Model LR','763 Exp LR','772 Model LR','772 Exp LR','794 Model LR','794 Exp LR'],comment='#',skiprows=5)
 LR_df.to_csv('LR_results.csv',sep=";",index=False)
             
-Te, chi_s = np.genfromtxt("te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,5))
+Te, chi_s = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,5))
 
 Te_l_lst = list(Te)
 chi_s_lst = list(chi_s)
@@ -442,8 +472,8 @@ final_time = time.time() - start_time
 
 print("This program took", "%5.3f" %  final_time,"s to run")
 
-os.rename("te_results.txt", time.strftime("te_results"+param+Tg+"K_%Y%m%d%H%M%S.txt")) 
-os.rename("te_results.csv", time.strftime("te_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
+os.rename("Te_results.txt", time.strftime("te_results"+param+Tg+"K_%Y%m%d%H%M%S.txt")) 
+os.rename("Te_results.csv", time.strftime("te_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
 
 os.rename("LR_results.txt", time.strftime("LR_results"+param+Tg+"_%Y%m%d%H%M%S.txt")) 
 os.rename("LR_results.csv", time.strftime("LR_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
