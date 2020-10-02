@@ -59,6 +59,11 @@ def LR_exp(Iij,Iik):
 def chi_squared(LRm,LRe):
     return ((LRe-LRm)/(0.05*LRe))**2
 
+def raw(textfile):
+    I = np.loadtxt(textfile + ".txt", delimiter=' ', 
+                  unpack=True, usecols=(1), skiprows=1) 
+    
+    return I
 
 T_g = 600 #757 = 15mtorr #gas temperature (K)
 p = 5 #charactersitic readsorption length (cm)
@@ -66,137 +71,22 @@ p = 5 #charactersitic readsorption length (cm)
 T_g_str = str(T_g)
 p_str = str(p)
 
+#------------------------------------------------------
+#Extract raw Intensity values for parameter chosen. 
 
-#param = "0.0050mbar"
+filename = input("What is the name of the text file containing the raw Photon Emission Rate Data?")
 
-#0.5kW RFPowerTopView004
-# I_696 = 3955.84
-# I_727 = 1146.58
-# I_738 = 6848.47
-# I_706 = 4028.31
-# I_794 = 4595.85  
-# I_714 = 634.94
+print("The file you have chosen is: " + filename + ".txt")
 
-#0.5kW irradiance 
-# I_696 = 44.2
-# I_727 = 15.01
-# I_738 = 99
-# I_706 = 46.26
-# I_794 = 109.68  
-# I_714 = 7.54
+I = raw(filename)
+I_696 = I[0]
+I_727 = I[1]
+I_738 = I[2]
+I_706 = I[3]
+I_794 = I[4]  
+I_714 = I[5]
 
-#0.75kW irradiance
-# I_696 = 60.68
-# I_727 = 20.12
-# I_738 = 136.37
-# I_706 = 63.50
-# I_794 = 156.12  
-# I_714 = 10.16
-
-#1.0kW irradiance 
-#I_696 = 61.07
-#I_727 = 20.39
-#I_738 = 135.51
-#I_706 = 63.91
-#I_794 = 156.79  
-#I_714 = 10.16
-
-#1.25kW irradiance
-I_696 = 85.07
-I_727 = 28.1
-I_738 = 185.81
-I_706 = 86.44
-I_794 = 228.43  
-I_714 = 13.52
-
-#1.5kW irradiance
-#I_696 = 94.65
-#I_727 = 30.71
-#I_738 = 204.38
-#I_706 = 94.97
-#I_794 = 259.22  
-#I_714 = 15.17
-
-
-#1.75kW irradiance
-#I_696 = 97.76
-#I_727 = 31.83
-#I_738 = 212.52
-#I_706 = 97.74
-#I_794 = 273.19  
-#I_714 = 15.78
-
-#2kW irradiance
-#I_696 = 100.34
-#I_727 = 32.27
-#I_738 = 214.45
-#I_706 = 100.05
-#I_794 = 280.27  
-#I_714 = 16.05
-
-#2.25kW irradiance
-#I_696 = 105.95
-#I_727 = 33.71
-#I_738 = 225.37
-#I_706 = 104.78
-#I_794 = 301.28  
-#I_714 = 16.40
-
-#2.5kW irradiance
-# I_696 = 109.80
-# I_727 = 34.77
-# I_738 = 226.72
-# I_706 = 104.68
-# I_794 = 308.39  
-# I_714 = 16.15
-
-#2.75kW irradiance
-#I_696 = 109.22
-#I_727 = 34.36
-#I_738 = 220.40
-#I_706 = 102.27
-#I_794 = 310.10  
-#I_714 = 16.63
-
-# #3.0kW irradiance 
-# I_696 = 107.5
-# I_727 = 33.8
-# I_738 = 223.2
-# I_706 = 102.4
-# I_794 = 309.39  
-# I_714 = 16.28
-
-# #0.0020mbar
-# I_696 = 31.79
-# I_727 = 9.02
-# I_738 = 62
-# I_706 = 26.73
-# I_794 = 88.78  
-# I_714 = 4.3
-
-#0.0030mbar
-# I_696 = 40.78
-# I_727 = 11.6
-# I_738 = 82.65
-# I_706 = 36.57
-# I_794 = 114.61  
-# I_714 = 5.61
-
-#0.0040mbar
-# I_696 = 48.49
-# I_727 = 13.63
-# I_738 = 100.5
-# I_706 = 45.11
-# I_794 = 134.89  
-# I_714 = 6.65
-
-#0.0050mbar
-# I_696 = 55.1
-# I_727 = 15.74
-# I_738 = 119.49
-# I_706 = 55.33
-# I_794 = 152.87  
-# I_714 = 7.64
+print(raw(filename))
 
 #1mtorr
 #I_696 = 25.4
@@ -251,6 +141,7 @@ with open('Density_inputs.txt', 'r') as inputs:
 #print(n1s4)
 #print(n1s5)
     
+#Creating headers in final results file
 with open('mod_results.txt', 'w') as resultsfile:
     resultsfile.write('Metastable and Resonant Density Model Results\n')
     resultsfile.write('Datetime (Y-M-S) = ' + datestring + '\n')
