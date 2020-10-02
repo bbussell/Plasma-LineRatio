@@ -472,11 +472,11 @@ final_time = time.time() - start_time
 
 print("This program took", "%5.3f" %  final_time,"s to run")
 
-os.rename("Te_results.txt", time.strftime("te_results"+param+Tg+"K_%Y%m%d%H%M%S.txt")) 
-os.rename("Te_results.csv", time.strftime("te_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
+os.rename("Te_results.txt", time.strftime("TeResults/te_results"+param+Tg+"K_%Y%m%d%H%M%S.txt")) 
+os.rename("Te_results.csv", time.strftime("TeResults/te_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
 
-os.rename("LR_results.txt", time.strftime("LR_results"+param+Tg+"_%Y%m%d%H%M%S.txt")) 
-os.rename("LR_results.csv", time.strftime("LR_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
+os.rename("LR_results.txt", time.strftime("TeResults/LR_results"+param+Tg+"_%Y%m%d%H%M%S.txt")) 
+os.rename("LR_results.csv", time.strftime("TeResults/LR_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
 
 #os.remove("te_results.csv")
                 
