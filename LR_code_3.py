@@ -20,7 +20,7 @@ datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
 param = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
 
-print("Thank you. The RF Power you are about to evaluate is: ",param)
+print("Thank you. The parameter you are about to evaluate is: ",param)
 
 def print_results(a,b,c):
     
@@ -60,7 +60,7 @@ def chi_squared(LRm,LRe):
     return ((LRe-LRm)/(0.05*LRe))**2
 
 def raw(textfile):
-    I = np.loadtxt(textfile + ".txt", delimiter=' ', 
+    I = np.loadtxt("RawInputData/" + textfile + ".txt", delimiter=' ', 
                   unpack=True, usecols=(1), skiprows=1) 
     
     return I
@@ -133,11 +133,11 @@ kij_714 = 1.51E-12
 Aij_714 = 0.63E6
 
 #-------------------------------------------------------
-with open('Density_inputs.txt', 'r') as inputs:
+# with open('Density_inputs.txt', 'r') as inputs:
 
-#Extract data and declare variables
-    n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
-                            unpack=True, usecols=(0, 1))
+# #Extract data and declare variables
+#     n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
+#                             unpack=True, usecols=(0, 1))
 #print(n1s4)
 #print(n1s5)
     
@@ -149,10 +149,9 @@ with open('mod_results.txt', 'w') as resultsfile:
     resultsfile.write('Gas Temperature (K) = ' + T_g_str + '\n')
     resultsfile.write('Characteristic length (cm) = '+ p_str + '\n')
 
-
 #test
-#n1s4 =[1,2,3,4,5]
-#n1s5 = [10,20,30,40,50]
+n1s4 =[1,2,3,4,5]
+n1s5 = [10,20,30,40,50]
 
 for a, b in zip(n1s4,n1s5):
 
@@ -221,20 +220,11 @@ with open('mod_results.txt', 'a+') as mod_results:
     
     d, e, f = np.loadtxt("mod_results.txt",unpack=True,usecols=(0, 1, 2),skiprows=5)
     
-    #print(d)
-    #print(e)
-    #print(f)
-    
     print_results(d,e,f) #calling function to print results
     
-    #min_pos = f.index(min(f))
-    
-    #print('Minimum chi-squared of ', min(f), 'occurs at position ', min_pos, 
-     #     'where n1s4 = ',"%7.1e" % d[63], 'cm\u00b3', 'and n1s5 = ',
-      #    "%7.1e" % e[63], 'cm\u00b3') 
 
 #renaming the file with the current date and time
-os.rename("mod_results.txt", time.strftime("n1sDEN_"+param+"_%Y%m%d%H%M.txt")) 
+os.rename("mod_results.txt", time.strftime("MetaResResults/n1sDEN_"+param+"_%Y%m%d%H%M.txt")) 
 
 #Calculating time program took to run
 final_time = time.time() - start_time
