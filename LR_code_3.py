@@ -18,6 +18,10 @@ import numpy as np
 from datetime import datetime
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
+param = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
+
+print("Thank you. The RF Power you are about to evaluate is: ",param)
+
 def print_results(a,b,c):
     
     c_list = list(c)
@@ -59,31 +63,31 @@ def chi_squared(LRm,LRe):
 T_g = 600 #757 = 15mtorr #gas temperature (K)
 p = 10 #charactersitic readsorption length (cm)
 
-param = "0.75kW"
+#param = "0.0050mbar"
 
 #0.5kW RFPowerTopView004
-#I_696 = 3955.84
-#I_727 = 1146.58
-#I_738 = 6848.47
-#I_706 = 4028.31
-#I_794 = 4595.85  
-#I_714 = 634.94
+# I_696 = 3955.84
+# I_727 = 1146.58
+# I_738 = 6848.47
+# I_706 = 4028.31
+# I_794 = 4595.85  
+# I_714 = 634.94
 
 #0.5kW irradiance 
-#I_696 = 44.2
-#I_727 = 15.01
-#I_738 = 99
-#I_706 = 46.26
-#I_794 = 109.68  
-#I_714 = 7.54
+I_696 = 44.2
+I_727 = 15.01
+I_738 = 99
+I_706 = 46.26
+I_794 = 109.68  
+I_714 = 7.54
 
 #0.75kW irradiance
-I_696 = 60.68
-I_727 = 20.12
-I_738 = 136.37
-I_706 = 63.50
-I_794 = 156.12  
-I_714 = 10.16
+# I_696 = 60.68
+# I_727 = 20.12
+# I_738 = 136.37
+# I_706 = 63.50
+# I_794 = 156.12  
+# I_714 = 10.16
 
 #1.0kW irradiance 
 #I_696 = 61.07
@@ -135,12 +139,12 @@ I_714 = 10.16
 #I_714 = 16.40
 
 #2.5kW irradiance
-#I_696 = 109.80
-#I_727 = 34.77
-#I_738 = 226.72
-#I_706 = 104.68
-#I_794 = 308.39  
-#I_714 = 16.15
+# I_696 = 109.80
+# I_727 = 34.77
+# I_738 = 226.72
+# I_706 = 104.68
+# I_794 = 308.39  
+# I_714 = 16.15
 
 #2.75kW irradiance
 #I_696 = 109.22
@@ -150,13 +154,45 @@ I_714 = 10.16
 #I_794 = 310.10  
 #I_714 = 16.63
 
-#3.0kW irradiance 
-#I_696 = 107.5
-#I_727 = 33.8
-##I_738 = 223.2
-#I_706 = 102.4
-#I_794 = 309.39  
-#I_714 = 16.28
+# #3.0kW irradiance 
+# I_696 = 107.5
+# I_727 = 33.8
+# I_738 = 223.2
+# I_706 = 102.4
+# I_794 = 309.39  
+# I_714 = 16.28
+
+# #0.0020mbar
+# I_696 = 31.79
+# I_727 = 9.02
+# I_738 = 62
+# I_706 = 26.73
+# I_794 = 88.78  
+# I_714 = 4.3
+
+#0.0030mbar
+# I_696 = 40.78
+# I_727 = 11.6
+# I_738 = 82.65
+# I_706 = 36.57
+# I_794 = 114.61  
+# I_714 = 5.61
+
+#0.0040mbar
+# I_696 = 48.49
+# I_727 = 13.63
+# I_738 = 100.5
+# I_706 = 45.11
+# I_794 = 134.89  
+# I_714 = 6.65
+
+#0.0050mbar
+# I_696 = 55.1
+# I_727 = 15.74
+# I_738 = 119.49
+# I_706 = 55.33
+# I_794 = 152.87  
+# I_714 = 7.64
 
 #1mtorr
 #I_696 = 25.4
@@ -265,11 +301,11 @@ for a, b in zip(n1s4,n1s5):
         
         chi_sum=chi_squared(LRm1,LRe1)+chi_squared(LRm2,LRe2)+chi_squared(LRm3,LRe3)
         #print('Chi squared for n_r= ',n_1s4, 'and n_m= ',n_1s5, 'is: ',chi_sum)
-           
-        mod_results = open('mod_results.txt', 'a+')
+        
+        with open('mod_results.txt', 'a+') as mod_results:
         #for i in range(len(n1s4)):
          #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
-        mod_results.write("%7.2e %7.2e %6.2f\n" % (a,b,chi_sum))
+            mod_results.write("%7.2e %7.2e %6.2f\n" % (a,b,chi_sum))
         
        # mod_results = open("mod_results.txt",'a+')
         #mod_results.write(a,';',b,';',chi_sum)
@@ -299,7 +335,7 @@ datafile.close()
 mod_results.close()
 
 #renaming the file with the current date and time
-os.rename("mod_results.txt", time.strftime(param+"_%Y%m%d%H%M.txt")) 
+os.rename("mod_results.txt", time.strftime("n1sDEN_"+param+"_%Y%m%d%H%M.txt")) 
 
 #Calculating time program took to run
 final_time = time.time() - start_time
