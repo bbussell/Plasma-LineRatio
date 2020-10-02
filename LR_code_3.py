@@ -61,7 +61,11 @@ def chi_squared(LRm,LRe):
 
 
 T_g = 600 #757 = 15mtorr #gas temperature (K)
-p = 10 #charactersitic readsorption length (cm)
+p = 5 #charactersitic readsorption length (cm)
+
+T_g_str = str(T_g)
+p_str = str(p)
+
 
 #param = "0.0050mbar"
 
@@ -74,12 +78,12 @@ p = 10 #charactersitic readsorption length (cm)
 # I_714 = 634.94
 
 #0.5kW irradiance 
-I_696 = 44.2
-I_727 = 15.01
-I_738 = 99
-I_706 = 46.26
-I_794 = 109.68  
-I_714 = 7.54
+# I_696 = 44.2
+# I_727 = 15.01
+# I_738 = 99
+# I_706 = 46.26
+# I_794 = 109.68  
+# I_714 = 7.54
 
 #0.75kW irradiance
 # I_696 = 60.68
@@ -98,12 +102,12 @@ I_714 = 7.54
 #I_714 = 10.16
 
 #1.25kW irradiance
-#I_696 = 85.07
-#I_727 = 28.1
-#I_738 = 185.81
-#I_706 = 86.44
-#I_794 = 228.43  
-#I_714 = 13.52
+I_696 = 85.07
+I_727 = 28.1
+I_738 = 185.81
+I_706 = 86.44
+I_794 = 228.43  
+I_714 = 13.52
 
 #1.5kW irradiance
 #I_696 = 94.65
@@ -239,14 +243,21 @@ kij_714 = 1.51E-12
 Aij_714 = 0.63E6
 
 #-------------------------------------------------------
-
-datafile = open("Density_inputs.txt", "r")
+with open('Density_inputs.txt', 'r') as inputs:
 
 #Extract data and declare variables
-n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
-                        unpack=True, usecols=(0, 1))
+    n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
+                            unpack=True, usecols=(0, 1))
 #print(n1s4)
 #print(n1s5)
+    
+with open('mod_results.txt', 'w') as resultsfile:
+    resultsfile.write('Metastable and Resonant Density Model Results\n')
+    resultsfile.write('Datetime (Y-M-S) = ' + datestring + '\n')
+    resultsfile.write('Experiment Name: ' + param + '\n')
+    resultsfile.write('Gas Temperature (K) = ' + T_g_str + '\n')
+    resultsfile.write('Characteristic length (cm) = '+ p_str + '\n')
+
 
 #test
 #n1s4 =[1,2,3,4,5]
@@ -315,24 +326,21 @@ for a, b in zip(n1s4,n1s5):
 
 #printing results to screeen
 
-datafile = open("mod_results.txt", "r")
-
-d, e, f = np.loadtxt("mod_results.txt",unpack=True,usecols=(0, 1, 2))
-
-#print(d)
-#print(e)
-#print(f)
-
-print_results(d,e,f) #calling function to print results
-
-#min_pos = f.index(min(f))
-
-#print('Minimum chi-squared of ', min(f), 'occurs at position ', min_pos, 
- #     'where n1s4 = ',"%7.1e" % d[63], 'cm\u00b3', 'and n1s5 = ',
-  #    "%7.1e" % e[63], 'cm\u00b3') 
-
-datafile.close()
-mod_results.close()
+with open('mod_results.txt', 'a+') as mod_results:
+    
+    d, e, f = np.loadtxt("mod_results.txt",unpack=True,usecols=(0, 1, 2),skiprows=5)
+    
+    #print(d)
+    #print(e)
+    #print(f)
+    
+    print_results(d,e,f) #calling function to print results
+    
+    #min_pos = f.index(min(f))
+    
+    #print('Minimum chi-squared of ', min(f), 'occurs at position ', min_pos, 
+     #     'where n1s4 = ',"%7.1e" % d[63], 'cm\u00b3', 'and n1s5 = ',
+      #    "%7.1e" % e[63], 'cm\u00b3') 
 
 #renaming the file with the current date and time
 os.rename("mod_results.txt", time.strftime("n1sDEN_"+param+"_%Y%m%d%H%M.txt")) 
