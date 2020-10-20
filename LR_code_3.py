@@ -18,6 +18,8 @@ import numpy as np
 from datetime import datetime
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
+exec(open('astro_nist.py').read())
+
 param = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
 
 print("Thank you. The parameter you are about to evaluate is: ",param)
@@ -109,6 +111,9 @@ print(raw(filename))
 #units for kij0 = cm^2K^0.5
 #units for Aij = s^-1
 
+#Fetching NIST data
+
+
 #696 j=1s5
 kij_696 = 1.43E-11
 Aij_696 = 6.39E6
@@ -134,11 +139,11 @@ kij_714 = 1.51E-12
 Aij_714 = 0.63E6
 
 #-------------------------------------------------------
-with open('Density_inputs.txt', 'r') as inputs:
+# with open('Density_inputs.txt', 'r') as inputs:
 
-#Extract data and declare variables
-    n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
-                            unpack=True, usecols=(0, 1))
+# #Extract data and declare variables
+#     n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
+#                             unpack=True, usecols=(0, 1))
     
 #Creating headers in final results file
 with open('mod_results.txt', 'w') as resultsfile:
@@ -150,8 +155,8 @@ with open('mod_results.txt', 'w') as resultsfile:
     resultsfile.write('n1s4 ns15 Chi-Squared \n')
 
 #test
-#n1s4 =[1,2,3,4,5]
-#n1s5 = [10,20,30,40,50]
+n1s4 =[1,2,3,4,5]
+n1s5 = [10,20,30,40,50]
 
 for a, b in zip(n1s4,n1s5):
 
