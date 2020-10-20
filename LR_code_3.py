@@ -88,6 +88,7 @@ I_714 = I[5]
 
 print(raw(filename))
 
+#John Boffard results
 #1mtorr
 #I_696 = 25.4
 #I_727 = 10.1
@@ -133,13 +134,11 @@ kij_714 = 1.51E-12
 Aij_714 = 0.63E6
 
 #-------------------------------------------------------
-# with open('Density_inputs.txt', 'r') as inputs:
+with open('Density_inputs.txt', 'r') as inputs:
 
-# #Extract data and declare variables
-#     n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
-#                             unpack=True, usecols=(0, 1))
-#print(n1s4)
-#print(n1s5)
+#Extract data and declare variables
+    n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
+                            unpack=True, usecols=(0, 1))
     
 #Creating headers in final results file
 with open('mod_results.txt', 'w') as resultsfile:
@@ -148,10 +147,11 @@ with open('mod_results.txt', 'w') as resultsfile:
     resultsfile.write('Experiment Name: ' + param + '\n')
     resultsfile.write('Gas Temperature (K) = ' + T_g_str + '\n')
     resultsfile.write('Characteristic length (cm) = '+ p_str + '\n')
+    resultsfile.write('n1s4 ns15 Chi-Squared \n')
 
 #test
-n1s4 =[1,2,3,4,5]
-n1s5 = [10,20,30,40,50]
+#n1s4 =[1,2,3,4,5]
+#n1s5 = [10,20,30,40,50]
 
 for a, b in zip(n1s4,n1s5):
 
@@ -207,18 +207,12 @@ for a, b in zip(n1s4,n1s5):
         #for i in range(len(n1s4)):
          #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
             mod_results.write("%7.2e %7.2e %6.2f\n" % (a,b,chi_sum))
-        
-       # mod_results = open("mod_results.txt",'a+')
-        #mod_results.write(a,';',b,';',chi_sum)
-        #mod_results.write()
 
-#mod_results.close()
-
-#printing results to screeen
+#printing results to screen
 
 with open('mod_results.txt', 'a+') as mod_results:
     
-    d, e, f = np.loadtxt("mod_results.txt",unpack=True,usecols=(0, 1, 2),skiprows=5)
+    d, e, f = np.loadtxt("mod_results.txt",unpack=True,usecols=(0, 1, 2),skiprows=6)
     
     print_results(d,e,f) #calling function to print results
     

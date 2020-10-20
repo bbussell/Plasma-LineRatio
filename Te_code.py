@@ -20,7 +20,7 @@ datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
 param = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
 
-print("Thank you. The RF Power you are about to evaluate is: ",param)
+print("Thank you. The parameter you are about to evaluate is: ",param)
 
 Kb = 1.38E-23*(1E4) #boltzman constant
 T_g = 600 #757 = 15mtorr #gas temperature (K)
