@@ -14,11 +14,12 @@ start_time = time.time()
 
 from math import exp    
 import numpy as np
+from spec_integrate import integrate
 
 from datetime import datetime
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
-exec(open('astro_nist.py').read())
+#exec(open('astro_nist.py').read())
 
 param = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
 
@@ -76,19 +77,24 @@ p_str = str(p)
 #------------------------------------------------------
 #Extract raw Intensity values for parameter chosen. 
 
-filename = input("What is the name of the text file containing the raw Photon Emission Rate Data?")
+#Integrating the spectral data to measure the intensity of each peak used
+filename = integrate()
 
-print("The file you have chosen is: " + filename + ".txt")
+os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\071020')
+lamda, I = np.loadtxt(filename+'_IntegratedIntensity.txt', comments='#', delimiter=',', skiprows=2, unpack=True, 
+                                        usecols=(0,1))
 
-I = raw(filename)
+os.chdir(r'..\..\..\Plasma Spec Code\Plasma-LineRatio')
+
+#I = raw(filename)
 I_696 = I[0]
-I_727 = I[1]
-I_738 = I[2]
-I_706 = I[3]
-I_794 = I[4]  
-I_714 = I[5]
+I_727 = I[3]
+I_738 = I[5]
+I_706 = I[1]
+I_794 = I[8]  
+I_714 = I[2]
 
-print(raw(filename))
+#print(raw(filename))
 
 #John Boffard results
 #1mtorr
@@ -139,11 +145,11 @@ kij_714 = 1.51E-12
 Aij_714 = 0.63E6
 
 #-------------------------------------------------------
-# with open('Density_inputs.txt', 'r') as inputs:
+with open('Density_inputs.txt', 'r') as inputs:
 
-# #Extract data and declare variables
-#     n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
-#                             unpack=True, usecols=(0, 1))
+#Extract data and declare variables
+    n1s4, n1s5 = np.loadtxt("Density_inputs.txt", delimiter=';', 
+                            unpack=True, usecols=(0, 1))
     
 #Creating headers in final results file
 with open('mod_results.txt', 'w') as resultsfile:
@@ -155,8 +161,8 @@ with open('mod_results.txt', 'w') as resultsfile:
     resultsfile.write('n1s4 ns15 Chi-Squared \n')
 
 #test
-n1s4 =[1,2,3,4,5]
-n1s5 = [10,20,30,40,50]
+#n1s4 =[1,2,3,4,5]
+#n1s5 = [10,20,30,40,50]
 
 for a, b in zip(n1s4,n1s5):
 

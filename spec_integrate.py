@@ -9,8 +9,6 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import sympy as sy
-from scipy.integrate import quad
 
 from sklearn.metrics import auc
 
@@ -24,9 +22,9 @@ os.chdir(r'..\..\OES\Calibrated\071020')
 
 def integrate():
     filename = input("What is the name of the file you want to analyse?")
-    file = filename+'.txt'
+    file = filename+'.tit'
     lamda, irr = np.loadtxt(file, comments='#', 
-                        delimiter=' ', skiprows=6, unpack=True, usecols=(0,1))
+                        delimiter=';', skiprows=7, unpack=True, usecols=(0,4))
     
     f = InterpolatedUnivariateSpline(lamda, irr, k=1)  # k=1 gives linear interpolation
 
@@ -53,8 +51,8 @@ def integrate():
     PeakA_772 = f.integral(770.14,775.13)
     PeakA_794 = f.integral(792.86,797.29)
     
-    I = [PeakA_696,PeakA_705,PeakA_727,PeakA_738,PeakA_750,PeakA_763,PeakA_772,PeakA_794]
-    I_data = {'Wavelength (nm)':[696,706,727,738,750,763,772,794],'Integrated Intensity':I}
+    I = [PeakA_696,PeakA_705,PeakA_714, PeakA_727,PeakA_738,PeakA_750,PeakA_763,PeakA_772,PeakA_794]
+    I_data = {'Wavelength (nm)':[696,706,714,727,738,750,763,772,794],'Integrated Intensity':I}
     print("")
     print("The result of using an integrate function is: ")
     print("")
@@ -62,10 +60,10 @@ def integrate():
     with open(filename+'_IntegratedIntensity.txt', 'w') as resultsfile:
         resultsfile.write('Datafile: '+filename+'\n')   
     df.to_csv(filename+'_IntegratedIntensity.txt', index=False,mode="a")
-    return df
+    return filename
 
-df = integrate()
-print(df)
+#integral_result = integrate()
+#print(integral_result)
 
 
 
