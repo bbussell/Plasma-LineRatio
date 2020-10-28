@@ -11,6 +11,8 @@ import pandas as pd
 import csv
 import os
 import time
+import matplotlib.pyplot as plt
+
 #import RadTrap_No2 as RT # import rad trap code and run
 from RadTrap_No2 import radtrap
 
@@ -471,12 +473,46 @@ Chi_df.to_csv('Te_results.csv',sep=';',index=False)
 LR_df=pd.read_csv("LR_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Model LR','738 Exp LR','763 Model LR','763 Exp LR','772 Model LR','772 Exp LR','794 Model LR','794 Exp LR'],comment='#',skiprows=5)
 LR_df.to_csv('LR_results.csv',sep=";",index=False)
             
-Te, chi_s = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,5))
+Te, chi_738, chi_763, chi_772, chi_794, chi_s = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,1,2,3,4,5))
 
 Te_l_lst = list(Te)
 chi_s_lst = list(chi_s)
 
 min_pos = chi_s_lst.index(min(chi_s_lst))
+
+#plotting chi-sum 
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+
+ax1.plot(Te, chi_738, c='b', label='chi-738')
+ax2 = fig.add_subplot(111)
+
+ax2.plot(Te,chi_763, c='r', label='chi-763')
+
+ax3 = fig.add_subplot(111)
+ax3.plot(Te,chi_772, c='g',label='chi-772')
+
+ax4 = fig.add_subplot(111)
+ax4.plot(Te,chi_794, c='y',label='chi-794')
+
+ax5 = fig.add_subplot(111)
+ax5.plot(Te,chi_s, c='magenta',label='chi-sum')
+
+plt.legend(loc='upper right');
+
+ax1.set_ylim([0,200])
+ax2.set_ylim([0,200])
+ax3.set_ylim([0,200])
+ax4.set_ylim([0,200])
+ax5.set_ylim([0,200])
+plt.show()
+#fig.set_xlim([690,800])
+
+#plt.axhline(color = 'black')
+
+plt.show()
+
 
 print("The minimum in chi-squared was", chi_s_lst[min_pos], "occurring when Te=", Te[min_pos])
 
@@ -492,6 +528,10 @@ os.rename("LR_results.txt", time.strftime("TeResults/LR_results"+param+Tg+"_%Y%m
 os.rename("LR_results.csv", time.strftime("TeResults/LR_results"+param+Tg+"_%Y%m%d%H%M%S.csv"))
 
 #os.remove("te_results.csv")
+
+
+
+
                 
         
           
