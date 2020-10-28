@@ -103,11 +103,11 @@ n_r = 1.2e10 #n1s4
 #I_794 = 283.11
 
 #1.25kW irradiance
-I_738 = 185.81
-I_763 = 456.89
-I_750 = 485.91
-I_772 = 221.06
-I_794 = 229.24
+# I_738 = 185.81
+# I_763 = 456.89
+# I_750 = 485.91
+# I_772 = 221.06
+# I_794 = 229.24
 
 #1.0kW irradiance
 # I_738 = 136.37
@@ -172,6 +172,22 @@ I_794 = 229.24
 #I_772 = 149.52
 #I_794 = 157.86 
 
+filename = input("What is the name of the file you want to analyse?")
+file = filename+'_IntegratedIntensity.txt'
+#change directory 
+os.chdir(r'..\..\OES\Calibrated\071020')
+
+lamda, I = np.loadtxt(file, comments='#', delimiter=',', skiprows=2, unpack=True, 
+                                        usecols=(0,1))
+
+os.chdir(r'..\..\..\Plasma Spec Code\Plasma-LineRatio')
+
+I_738 = I[4]
+I_750 = I[5]
+I_763 = I[6]
+I_772 = I[7]
+I_794 = I[8]
+
 Exp_738 = I_738/I_750
 Exp_763 = I_763/I_750
 Exp_772 = I_772/I_750
@@ -187,6 +203,7 @@ Exp_794 = I_794/I_750
 #k = np.array([(2.20E-10),6.09E-9,8,23E-8],[1.10E-9,1.91E-8,4.62E-8],
            #  [2.08E-10,8.83E-8,1.03E-7],[1.04E-10,1.03E-8,3.85E-8],
           #   [2.39E-10,3.93E-8,5.15E-8])
+
 
 #738 j=1s4 i=2p3
 kG_738 = 2.20E-10
@@ -321,10 +338,10 @@ def chi_squared(LRm,LRe,err):
 #Loading Te model data 
 
 #Extract data and declare variables
-#T = np.loadtxt("Te_Intervals.txt", unpack=True,
-#                      usecols=(0))
+T = np.loadtxt("Te_Intervals.txt", unpack=True,
+                      usecols=(0))
 #testing T values
-T = [3.5,8]
+#T = [3.5,8]
 print("The Te values being modelled are:")
 print(T)
 
@@ -404,17 +421,13 @@ for a in T:
     R_772_3 = Rad[6]
     
     #738/750
-    
     LR_738 = LR_mod(kG_738,a,alphaG_738,EG_738,kM_738,alphaM_738,EM_738,kR_738,alphaR_738,ER_738,R_738,R_750)
     #print("The 738/750 line ratio is ", LR_738, "for Te =", a)
-    
     print("-------------------------")
-    
     LR_763 = LR_mod(kG_763,a,alphaG_763,EG_763,kM_763,alphaM_763,EM_763,kR_763,alphaR_763,ER_763,R_763,R_750)
     #print("The 763/750 line ratio is, ", LR_763, "for Te =", a)
     
-    
-    #print("-------------------------")
+        #print("-------------------------")
 
     LR_772 = LR_mod(kG_772,a,alphaG_772,EG_772,kM_772,alphaM_772,EM_772,kR_772,alphaR_772,ER_772,R_772_3,R_750)
     #print("The 772/750 line ratio is, ", LR_772, "for Te =", a)
