@@ -15,6 +15,8 @@ start_time = time.time()
 from math import exp    
 import numpy as np
 from spec_integrate import integrate
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 
 from datetime import datetime
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
@@ -78,18 +80,23 @@ p_str = str(p)
 #Extract raw Intensity values for parameter chosen. 
 
 #Integrating the spectral data to measure the intensity of each peak used
-filename = integrate()
 
-os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\071020')
+#filename = input("What is the name of the file you want to analyse?")
+
+filename=integrate()
+
+os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\081020')
 lamda, I = np.loadtxt(filename+'_IntegratedIntensity.txt', comments='#', delimiter=',', skiprows=2, unpack=True, 
                                         usecols=(0,1))
+
+I_corr = I
 
 os.chdir(r'..\..\..\Plasma Spec Code\Plasma-LineRatio')
 
 #I = raw(filename)
 I_696 = I[0]
 I_727 = I[3]
-I_738 = I[5]
+I_738 = I[4]
 I_706 = I[1]
 I_794 = I[8]  
 I_714 = I[2]
@@ -155,6 +162,7 @@ with open('Density_inputs.txt', 'r') as inputs:
 with open('mod_results.txt', 'w') as resultsfile:
     resultsfile.write('Metastable and Resonant Density Model Results\n')
     resultsfile.write('Datetime (Y-M-S) = ' + datestring + '\n')
+    resultsfile.write('Filename:' + filename + '\n')
     resultsfile.write('Experiment Name: ' + param + '\n')
     resultsfile.write('Gas Temperature (K) = ' + T_g_str + '\n')
     resultsfile.write('Characteristic length (cm) = '+ p_str + '\n')
@@ -223,9 +231,21 @@ for a, b in zip(n1s4,n1s5):
 
 with open('mod_results.txt', 'a+') as mod_results:
     
-    d, e, f = np.loadtxt("mod_results.txt",unpack=True,usecols=(0, 1, 2),skiprows=6)
+    d, e, f = np.loadtxt("mod_results.txt",unpack=True,usecols=(0, 1, 2),skiprows=7)
     
     print_results(d,e,f) #calling function to print results
+    
+#plotting chi-sum as 3D plot
+
+# fig = plt.figure()
+# ax1 = fig.add_subplot(111)
+
+# ax1.plot(Te, f, c='b', label='chi-squared')
+
+# plt.legend(loc='upper right');
+
+# #ax1.set_ylim([0,200])
+# plt.show()
     
 
 #renaming the file with the current date and time
