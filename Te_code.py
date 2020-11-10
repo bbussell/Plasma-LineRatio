@@ -507,9 +507,6 @@ ax3.set_ylim([0,200])
 ax4.set_ylim([0,200])
 ax5.set_ylim([0,200])
 plt.show()
-#fig.set_xlim([690,800])
-
-#plt.axhline(color = 'black')
 
 plt.show()
 
