@@ -26,7 +26,7 @@ print("Thank you. The parameter you are about to evaluate is: ",param)
 
 Kb = 1.38E-23*(1E4) #boltzman constant
 T_g = 600 #757 = 15mtorr #gas temperature (K)
-p = 10 #charactersitic readsorption length (cm)
+p = 5 #charactersitic readsorption length (cm)
 #M = 9.109E-31
 M = 39.948# 6.6335209E-23 #kg
 #M = 6.6335209E-26 #atomic mass of Ar(kg)
@@ -38,14 +38,18 @@ p_str = str(p)
 #!!!!!!!!!!!!!!!!!!!!!!!
 #Before running, ensure all parameters are correct. Especially:
 #Process Pressure, n_m, n_r
+PP_mbar = float(input("What is the process pressure in mbar?"))
 
-PP_mbar = 0.0050 #argon partial pressure in mbar
+#PP_mbar = 0.0020 #argon partial pressure in mbar
 PP_pa = PP_mbar*100 #argon partial pressure in pascals
 n_g = PP_pa/(Kb*T_g)#6E13 
 #n_m = 3.0E10
 #n_r = 9.3E9
-n_m = 3.9E10 #n1s5
-n_r = 1.2e10 #n1s4
+#Ask user for n_m and n_r inputs
+n_m = float(input("What is the calculated metastable density?"))
+#n_m = 3E10 #n1s5
+n_r = float(input("What is the calculated resonant density?"))
+#n_r = 8.8E10 #n1s4
 
 #0.0030
 # I_738 = 82.65
@@ -459,26 +463,45 @@ for a in T:
     print("772 chi is: ", chi_772)
     print("794 chi is: ", chi_794)
     
+    #Adding calculation of chi-sum without including 763nm line
+    
+    chi_excl = chi_738 + chi_772 + chi_794
+    
+    chi_s_e_738 = chi_763 + chi_772 + chi_794
+    
+    chi_s_e_both = chi_772 + chi_794
+    
     with open('Te_results.txt', 'a+') as te_results:
         #for i in range(len(n1s4)):
          #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
-        te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum))
+        te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum, chi_excl, chi_s_e_738, chi_s_e_both))
         
     with open("LR_results.txt", 'a+') as lr_results:
         lr_results.write("%4.2f %5.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n" % (a,LR_738,Exp_738,LR_763,Exp_763,LR_772,Exp_772,LR_794,Exp_794))
             
-Chi_df=pd.read_csv("Te_results.txt",sep=" ",names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum'],comment="#",skiprows=5)
+Chi_df=pd.read_csv("Te_results.txt",sep=" ",names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum', 'Chi Sum excl. 763nm', 'Chi Sum excl. 738nm', 'Chi Sum excl 738 and 763nm'],comment="#",skiprows=5)
 Chi_df.to_csv('Te_results.csv',sep=';',index=False)
 
 LR_df=pd.read_csv("LR_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Model LR','738 Exp LR','763 Model LR','763 Exp LR','772 Model LR','772 Exp LR','794 Model LR','794 Exp LR'],comment='#',skiprows=5)
 LR_df.to_csv('LR_results.csv',sep=";",index=False)
             
-Te, chi_738, chi_763, chi_772, chi_794, chi_s = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,1,2,3,4,5))
+Te, chi_738, chi_763, chi_772, chi_794, chi_s, chi_s_excl, chi_s_excl_738, chi_s_excl_both = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,1,2,3,4,5,6,7,8))
 
 Te_l_lst = list(Te)
 chi_s_lst = list(chi_s)
 
+chi_s_e_lst = list(chi_s_excl)
+chi_s_e_738_lst = list(chi_s_excl_738)
+chi_s_e_both_lst = list(chi_s_excl_both)
+
 min_pos = chi_s_lst.index(min(chi_s_lst))
+
+min_pos_excl = chi_s_e_lst.index(min(chi_s_e_lst))
+
+min_pos_738 = chi_s_e_738_lst.index(min(chi_s_e_738_lst))
+
+min_pos_both = chi_s_e_both_lst.index(min(chi_s_e_both_lst))
+
 
 #plotting chi-sum 
 
@@ -499,6 +522,15 @@ ax4.plot(Te,chi_794, c='y',label='chi-794')
 ax5 = fig.add_subplot(111)
 ax5.plot(Te,chi_s, c='magenta',label='chi-sum')
 
+ax6 = fig.add_subplot(111)
+ax6.plot(Te,chi_s_excl, c='orange',label='chi-sum excl 763')
+
+ax7 = fig.add_subplot(111)
+ax7.plot(Te,chi_s_excl_738, c='purple',label='chi-sum excl 738')
+
+ax8 = fig.add_subplot(111)
+ax8.plot(Te,chi_s_excl_both, c='black', label='chi-sum excl both')
+
 plt.legend(loc='upper right');
 
 ax1.set_ylim([0,200])
@@ -506,12 +538,19 @@ ax2.set_ylim([0,200])
 ax3.set_ylim([0,200])
 ax4.set_ylim([0,200])
 ax5.set_ylim([0,200])
+ax6.set_ylim([0,200])
 plt.show()
 
 plt.show()
 
 
 print("The minimum in chi-squared was", chi_s_lst[min_pos], "occurring when Te=", Te[min_pos])
+
+print("The minimum in chi-squared, excluding 763 is:", chi_s_e_lst[min_pos_excl], "occuring when Te=", Te[min_pos_excl])
+
+print("The minimum in chi-squared, excluding 738 is:", chi_s_e_738_lst[min_pos_738], "occuring when Te=", Te[min_pos_738])
+
+print("The minimum in chi-squared, excluding both 763 and 738 is:", chi_s_e_both_lst[min_pos_both], "occuring when Te=", Te[min_pos_both])
 
 #Calculating time program took to run
 final_time = time.time() - start_time
