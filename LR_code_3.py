@@ -85,7 +85,7 @@ p_str = str(p)
 
 filename=integrate()
 
-os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\081020')
+os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\071020')
 lamda, I = np.loadtxt(filename+'_IntegratedIntensity.txt', comments='#', delimiter=',', skiprows=2, unpack=True, 
                                         usecols=(0,1))
 
@@ -237,8 +237,11 @@ with open('mod_results.txt', 'a+') as mod_results:
     
 #plotting chi-sum as 3D plot
 
-# fig = plt.figure()
-# ax1 = fig.add_subplot(111)
+fig3d = plt.figure()
+ax1 = plt.axes(projection="3d")
+
+ax1.plot3D(d,e,f,'black')
+plt.show()
 
 # ax1.plot(Te, f, c='b', label='chi-squared')
 
