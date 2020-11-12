@@ -39,7 +39,7 @@ p_str = str(p)
 #Before running, ensure all parameters are correct. Especially:
 #Process Pressure, n_m, n_r
 
-PP_mbar = 0.0050 #argon partial pressure in mbar
+PP_mbar = 0.0020 #argon partial pressure in mbar
 PP_pa = PP_mbar*100 #argon partial pressure in pascals
 n_g = PP_pa/(Kb*T_g)#6E13 
 #n_m = 3.0E10
@@ -180,7 +180,7 @@ n_r = float(input("What is the calculated resonant density?"))
 filename = input("What is the name of the file you want to analyse?")
 file = filename+'_IntegratedIntensity.txt'
 #change directory 
-os.chdir(r'..\..\OES\Calibrated\081020')
+os.chdir(r'..\..\OES\Calibrated\071020')
 
 lamda, I = np.loadtxt(file, comments='#', delimiter=',', skiprows=2, unpack=True, 
                                         usecols=(0,1))
@@ -466,30 +466,41 @@ for a in T:
     
     chi_excl = chi_738 + chi_772 + chi_794
     
+    chi_s_e_738 = chi_763 + chi_772 + chi_794
+    
+    chi_s_e_both = chi_772 + chi_794
+    
     with open('Te_results.txt', 'a+') as te_results:
         #for i in range(len(n1s4)):
          #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
-        te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum, chi_excl))
+        te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum, chi_excl, chi_s_e_738, chi_s_e_both))
         
     with open("LR_results.txt", 'a+') as lr_results:
         lr_results.write("%4.2f %5.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n" % (a,LR_738,Exp_738,LR_763,Exp_763,LR_772,Exp_772,LR_794,Exp_794))
             
-Chi_df=pd.read_csv("Te_results.txt",sep=" ",names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum', 'Chi Sum excl. 763nm'],comment="#",skiprows=5)
+Chi_df=pd.read_csv("Te_results.txt",sep=" ",names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum', 'Chi Sum excl. 763nm', 'Chi Sum excl. 738nm', 'Chi Sum excl 738 and 763nm'],comment="#",skiprows=5)
 Chi_df.to_csv('Te_results.csv',sep=';',index=False)
 
 LR_df=pd.read_csv("LR_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Model LR','738 Exp LR','763 Model LR','763 Exp LR','772 Model LR','772 Exp LR','794 Model LR','794 Exp LR'],comment='#',skiprows=5)
 LR_df.to_csv('LR_results.csv',sep=";",index=False)
             
-Te, chi_738, chi_763, chi_772, chi_794, chi_s, chi_s_excl = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,1,2,3,4,5,6))
+Te, chi_738, chi_763, chi_772, chi_794, chi_s, chi_s_excl, chi_s_excl_738, chi_s_excl_both = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,1,2,3,4,5,6,7,8))
 
 Te_l_lst = list(Te)
 chi_s_lst = list(chi_s)
 
 chi_s_e_lst = list(chi_s_excl)
+chi_s_e_738_lst = list(chi_s_excl_738)
+chi_s_e_both_lst = list(chi_s_excl_both)
 
 min_pos = chi_s_lst.index(min(chi_s_lst))
 
 min_pos_excl = chi_s_e_lst.index(min(chi_s_e_lst))
+
+min_pos_738 = chi_s_e_738_lst.index(min(chi_s_e_738_lst))
+
+min_pos_both = chi_s_e_both_lst.index(min(chi_s_e_both_lst))
+
 
 #plotting chi-sum 
 
@@ -513,6 +524,12 @@ ax5.plot(Te,chi_s, c='magenta',label='chi-sum')
 ax6 = fig.add_subplot(111)
 ax6.plot(Te,chi_s_excl, c='orange',label='chi-sum excl 763')
 
+ax7 = fig.add_subplot(111)
+ax7.plot(Te,chi_s_excl_738, c='purple',label='chi-sum excl 738')
+
+ax8 = fig.add_subplot(111)
+ax8.plot(Te,chi_s_excl_both, c='black', label='chi-sum excl both')
+
 plt.legend(loc='upper right');
 
 ax1.set_ylim([0,200])
@@ -529,6 +546,10 @@ plt.show()
 print("The minimum in chi-squared was", chi_s_lst[min_pos], "occurring when Te=", Te[min_pos])
 
 print("The minimum in chi-squared, excluding 763 is:", chi_s_e_lst[min_pos_excl], "occuring when Te=", Te[min_pos_excl])
+
+print("The minimum in chi-squared, excluding 738 is:", chi_s_e_738_lst[min_pos_738], "occuring when Te=", Te[min_pos_738])
+
+print("The minimum in chi-squared, excluding both 763 and 738 is:", chi_s_e_both_lst[min_pos_both], "occuring when Te=", Te[min_pos_both])
 
 #Calculating time program took to run
 final_time = time.time() - start_time
