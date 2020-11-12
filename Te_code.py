@@ -45,8 +45,10 @@ n_g = PP_pa/(Kb*T_g)#6E13
 #n_m = 3.0E10
 #n_r = 9.3E9
 #Ask user for n_m and n_r inputs
-n_m = 3E10 #n1s5
-n_r = 8.8E10 #n1s4
+n_m = float(input("What is the calculated metastable density?"))
+#n_m = 3E10 #n1s5
+n_r = float(input("What is the calculated resonant density?"))
+#n_r = 8.8E10 #n1s4
 
 #0.0030
 # I_738 = 82.65
