@@ -182,7 +182,7 @@ n_r = float(input("What is the calculated resonant density?"))
 filename = input("What is the name of the file you want to analyse?")
 file = filename+'_IntegratedIntensity.txt'
 #change directory 
-os.chdir(r'..\..\OES\Calibrated\071020')
+os.chdir(r'..\..\OES\Calibrated\081020')
 
 lamda, I = np.loadtxt(file, comments='#', delimiter=',', skiprows=2, unpack=True, 
                                         usecols=(0,1))

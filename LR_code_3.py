@@ -11,7 +11,6 @@ import time
 import os
 
 start_time = time.time()
-
 from math import exp    
 import numpy as np
 from spec_integrate import integrate
@@ -85,7 +84,7 @@ p_str = str(p)
 
 filename=integrate()
 
-os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\071020')
+os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\061020')
 lamda, I = np.loadtxt(filename+'_IntegratedIntensity.txt', comments='#', delimiter=',', skiprows=2, unpack=True, 
                                         usecols=(0,1))
 
