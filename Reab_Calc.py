@@ -11,12 +11,12 @@ import time
 
 #Constants
 
-T_g = 600 #757 = 15mtorr #gas temperature (K)
-p = 10 #charactersitic readsorption length (cm)
-#M = 9.109E-31
-M = 39.948# 6.6335209E-23 #kg
-#M = 6.6335209E-26 #atomic mass of Ar(kg)
-R = 8.31446261815324*(1E4)
+# T_g = 600 #757 = 15mtorr #gas temperature (K)
+# p = 5 #charactersitic readsorption length (cm)
+# #M = 9.109E-31
+# M = 39.948# 6.6335209E-23 #kg
+# #M = 6.6335209E-26 #atomic mass of Ar(kg)
+# R = 8.31446261815324*(1E4)
 
 
 #Function to calculate the reabsorption coefficients k_o for each of the 22 lines
@@ -70,8 +70,9 @@ def ko_calc(lamda,gi,gj,Aij):
 
 #n_ij, A, g_i, g_j, n_j, ko, k_ij = np.loadtxt("line_data_full.txt", comments='#', delimiter=' ', unpack=True, 
                                    #usecols=(0,1,2,3,4,5,6))   
-n_ij, A, g_i, g_j, n_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';', skiprows=2, unpack=True, 
-                                    usecols=(0,1,2,3,4))
+#n_ij, A, g_i, g_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';', skiprows=2, unpack=True, 
+                                    #usecols=(0,1,2,3))
+#n_j = np.loadtxt("live_density.txt",comments='#',delimiter=' ', usecols=(2))
 
 #n_ij = [750.39,667.73]
 #A = [47200000,235000]
@@ -85,15 +86,14 @@ n_ij, A, g_i, g_j, n_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';
 #print("ko data with 750 and 738")
 #print(ko_data(n_ij,g_i,g_j,A,nj))
 
-def reab_coeff_calc(n,gi,gj,A,nj):
-        with open("line_data_full.txt","w+") as datafile:
-        
+def reab_coeff_calc(n_ij,g_i,g_j,A,n_j):
+        with open("line_data_full.txt","w+") as datafile:      
             for a, b, c, d, e in zip(n_ij,g_i,g_j,A,n_j):
-                print("ko for ", a, "nm is: ",ko_calc(a,b,c,d))
+                #print("ko for ", a, "nm is: ",ko_calc(a,b,c,d))
                 ko = ko_calc(a,b,c,d) 
                 kij = ko*e*((T_g)**(-0.5))
-                print( " and kij = ", kij)
-                print(" ")
+                #print( " and kij = ", kij)
+                #print(" ")
                 
                 datafile.write("%6.2f %1.0f %1.0f %5.2e %7.2e %7.2e %7.5f \n" % (a,b,c,d,e,ko,kij))
     

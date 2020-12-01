@@ -30,7 +30,7 @@ Kb = 1.38E-23*(1E4) #boltzman constant
 #M = 9.109E-31
 M = 39.948# 6.6335209E-23 #kg
 #M = 6.6335209E-26 #atomic mass of Ar(kg)
-R = 8.31446261815324*(1E4)
+R = 8.31446261815324*(1E3)
 T_g = 600 #757 = 15mtorr #gas temperature (K)
 p = 5 #charactersitic readsorption length (cm)
 
@@ -45,7 +45,7 @@ p_str = str(p)
 #Process Pressure, n_m, n_r
 
 #List of datafiles to be used in electron density calculations.
-filelist = ['LOCAL_RF_POS10006']
+filelist = ['LOCAL_RF_POS10001']
             # 'LOCAL_RF_POS10002',
             # 'LOCAL_RF_POS10003',
             # 'LOCAL_RF_POS10004',
@@ -59,6 +59,7 @@ filelist = ['LOCAL_RF_POS10006']
             # 'LOCAL_RF_POS10012']
 
 #Transition Probabilties and reabsorption coeffcients for 6 Ar lines
+#for BF analysis 
 #units for kij0 = cm^2K^0.5
 #units for Aij = s^-1
 
@@ -203,7 +204,7 @@ def reabs_coeff(k,n):
 #Function for calculation of escape factors
 
 def escape_factor(k,n,p):
-    return (2-exp(-reabs_coeff(k,n)*p/1000))/(1+(reabs_coeff(k,n)*p))
+    return (2-exp((-reabs_coeff(k,n)*p)/1000))/(1+(reabs_coeff(k,n)*p))
 
 #Function for calculation of Model Line Ratios
                 
@@ -356,42 +357,48 @@ def Te(T,n_m,n_r):
     n_ij, A, g_i, g_j = np.loadtxt("line_data2.txt", comments='#', delimiter=';', skiprows=2, unpack=True, 
                                         usecols=(0,1,2,3))
     
-    n_i = np.loadtxt("line_data2.txt", comments='#',dtype=str, delimiter=';', skiprows=2, unpack=True, 
+    j_level = np.loadtxt("line_data2.txt", comments='#',dtype=str, delimiter=';', skiprows=2, unpack=True, 
                                         usecols=(4))
 
     #Taking n_m and n_r from calculation 
     n_1s3 = n_m/6.5
     n_1s2 = n_r
     
-    for a, b in zip(n_ij,n_i):
+    for a, b, c, d, e in zip(n_ij,A,g_i,g_j,j_level):
         print("Wavelength: ", a)
-        print("Lower level: ", b)
-        if b=="1s2":
+        print("A: ", b)
+        print("g_i", c)
+        print("g_j", d)
+        print("Lower level: ", e)
+        if e=="1s2":
             N_j = n_1s2
-        elif b=="1s3":
+        elif e=="1s3":
             N_j = n_1s3
-        elif b=="1s4":
+        elif e=="1s4":
             N_j = n_r
-        elif b=="1s5":
+        elif e=="1s5":
             N_j = n_m
         
-        print("Density of ", b, "is ", N_j)
+        print("Density of ", e, "is ", N_j)
             
         with open('live_density.txt', 'a+') as resultsfile:
-            resultsfile.write("%4.2f %s %4.2e \n" % (a,b,N_j))
+            resultsfile.write("%4.2f %4.2f %3.1f %3.1f %4.2e \n" % (a,b,c,d,N_j))
     
-    n_ij, n_j = np.loadtxt("live_density.txt", comments='#', delimiter=' ', unpack=True, 
-                                        usecols=(0,2))  
+    n_ij, A, g_i, g_j, n_j = np.loadtxt("live_density.txt", comments='#', delimiter=' ', unpack=True, 
+                                        usecols=(0,1,2,3,4))
+    
+    os.rename("live_density.txt", ("live_density"+i+param+Tg+'.txt'))
     
     
-    radtrap(n_ij,A,g_i,g_j,n_j)
+    radtrap(n_ij,A,g_i,g_j,n_j,p,T_g,M,R)
     print("")
     print("radtrap complete")
     print("")
     
     n_ij, g_i, g_j, A, n_j, ko, k_ij = np.loadtxt("line_data_full.txt", comments='#', delimiter=' ', unpack=True, 
                                    usecols=(0,1,2,3,4,5,6))   
-    print_escape(n_ij,g_i,g_j,A,n_j,ko,k_ij)
+    print_escape(n_ij,g_i,g_j,A,n_j,ko,k_ij,p)
+    
     print("")
     print("escape complete")
     print("")
@@ -581,7 +588,7 @@ def e_density(T,i):
     nec_419 = 3.2E11 #calculated from reciprocal of transition probability
     nec_367 = 1E11 #estimate based on Zhu 2007
     nec_415 = 5E11
-    nec_383 = 1E11 #Zhu 2007
+    nec_383 = 9E10 #Zhu 2007 and Wang
     nec_365 = 1E11
     nec_360 = 1E11
     
@@ -626,15 +633,19 @@ def e_density(T,i):
 #filename = input("What is the name of the file you want to analyse?")
     
 for i in filelist:
-        # PP_mbar = float(input("What is the process pressure in mbar?"))
-        # #PP_mbar = 0.0020 #argon partial pressure in mbar
-        # PP_pa = PP_mbar*100 #argon partial pressure in pascals
-        # n_g = PP_pa/(Kb*T_g)#6E13 
+        PP_mbar = float(input("What is the process pressure in mbar?"))
+        #PP_mbar = 0.0020 #argon partial pressure in mbar
+        PP_pa = PP_mbar*100 #argon partial pressure in pascals
+                
+        PP_mtorr = PP_mbar/0.00133
+        n_g = ((3.54E13)*PP_mtorr*(273/T_g))#PP_mtorr/(Kb*T_g)#6E13 
+        
+        print("the neutral density, calculated using PP, is: ", "%4.2e" % n_g)
         
         #New n_g
         #Assuming that p=0.0050mbar, which is 3.75mtorr, then at 0.5kW, n_g = 6E13
-        N_g = float(input("What is the ground state density, in x10^13 cm^-3"))
-        n_g = N_g*(1E13)
+        # N_g = float(input("What is the ground state density, in x10^13 cm^-3"))
+        # n_g = N_g*(1E13)
         
         #Ask user for electon temperature value to be used in electron density calculation
         #calling integrate function to determine intensity of 451 and 750 emission lines
@@ -669,15 +680,15 @@ for i in filelist:
         #Executing function to calculate n_m and n_r
         final_density = LR(n1s4,n1s5)
         
+        #Calculation of electron temperature by looping through Te values
+        #------------------
+        #Te Calculation
+        #-------------------------------------------------------
         print("--------------------------------------------------------------")
         print("")
         print("You are now calculating electron temperature")
         print("")
-        
-        #------------------
-        #Te Calculation
-               
-        #-------------------------------------------------------
+                             
         #Loading Te model data 
         
         #Extract data and declare variables
