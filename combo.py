@@ -23,7 +23,6 @@ from datetime import datetime
 from RadTrap_No2 import radtrap, print_escape
 import pandas as pd
 
-
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
 Kb = 1.38E-23*(1E4) #boltzman constant
@@ -32,7 +31,7 @@ M = 39.948# 6.6335209E-23 #kg
 #M = 6.6335209E-26 #atomic mass of Ar(kg)
 R = 8.31446261815324*(1E3)
 T_g = 600 #757 = 15mtorr #gas temperature (K)
-p = 5 #charactersitic readsorption length (cm)
+p = 5.0 #charactersitic readsorption length (cm)
 
 T_g_str = str(T_g)
 p_str = str(p)
@@ -45,25 +44,26 @@ p_str = str(p)
 #Process Pressure, n_m, n_r
 
 #List of datafiles to be used in electron density calculations.
-filelist = ['LOCAL_RF_POS10001']
-            # 'LOCAL_RF_POS10002',
-            # 'LOCAL_RF_POS10003',
-            # 'LOCAL_RF_POS10004',
-            # 'LOCAL_RF_POS10005',
-            # 'LOCAL_RF_POS10006',
-            # 'LOCAL_RF_POS10007',
-            # 'LOCAL_RF_POS10008',
-            # 'LOCAL_RF_POS10009',
-            # 'LOCAL_RF_POS10010',
-            # 'LOCAL_RF_POS10011',
-            # 'LOCAL_RF_POS10012']
-
+filelist = ['STEERING0001',
+            'STEERING0002']
+#            'RFPOWER0003',
+#            'RFPOWER0004',
+#            'RFPOWER0005',
+#            'RFPOWER0006',
+#            'RFPOWER0007',
+#            'RFPOWER0008',
+#            'RFPOWER0009',
+#            'RFPOWER0010',
+#            'RFPOWER0011']
+           
 #Transition Probabilties and reabsorption coeffcients for 6 Ar lines
 #for BF analysis 
 #units for kij0 = cm^2K^0.5
 #units for Aij = s^-1
 
 #Fetching NIST data
+
+
 
 #696 j=1s5
 kij_696 = 1.43E-11
@@ -334,7 +334,7 @@ def LR(n1s4,n1s5):
         #renaming the file with the current date and time
         os.rename("mod_results.txt", time.strftime("MetaResResults/n1sDEN_"+i+param+"_%Y%m%d%H%M.txt")) 
 
-        return final_density
+        return final_density, chi_sum
 def Te(T,n_m,n_r):
     #n_m = 3.0E10
     #n_r = 9.3E9
@@ -365,11 +365,11 @@ def Te(T,n_m,n_r):
     n_1s2 = n_r
     
     for a, b, c, d, e in zip(n_ij,A,g_i,g_j,j_level):
-        print("Wavelength: ", a)
-        print("A: ", b)
-        print("g_i", c)
-        print("g_j", d)
-        print("Lower level: ", e)
+        #print("Wavelength: ", a)
+        #print("A: ", b)
+        #print("g_i", c)
+        #print("g_j", d)
+        #print("Lower level: ", e)
         if e=="1s2":
             N_j = n_1s2
         elif e=="1s3":
@@ -379,7 +379,7 @@ def Te(T,n_m,n_r):
         elif e=="1s5":
             N_j = n_m
         
-        print("Density of ", e, "is ", N_j)
+        #print("Density of ", e, "is ", N_j)
             
         with open('live_density.txt', 'a+') as resultsfile:
             resultsfile.write("%4.2f %4.2f %3.1f %3.1f %4.2e \n" % (a,b,c,d,N_j))
@@ -482,21 +482,25 @@ def Te(T,n_m,n_r):
         
         chi_s_e_both = chi_772 + chi_794
         
+        chi_763_772 = chi_763 + chi_772
+        
+        chi_738_794 = chi_738 + chi_794
+        
         with open('Te_results.txt', 'a+') as te_results:
             #for i in range(len(n1s4)):
              #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
-            te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum, chi_excl, chi_s_e_738, chi_s_e_both))
+            te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum, chi_excl, chi_s_e_738, chi_s_e_both,chi_763_772, chi_738_794))
             
         with open("LR_results.txt", 'a+') as lr_results:
             lr_results.write("%4.2f %5.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n" % (a,LR_738,Exp_738,LR_763,Exp_763,LR_772,Exp_772,LR_794,Exp_794))
         
-    Chi_df=pd.read_csv("Te_results.txt",sep=" ",names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum', 'Chi Sum excl. 763nm', 'Chi Sum excl. 738nm', 'Chi Sum excl 738 and 763nm'],comment="#",skiprows=6)
+    Chi_df=pd.read_csv("Te_results.txt",sep=" ",names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum', 'Chi Sum excl. 763nm', 'Chi Sum excl. 738nm', 'Chi Sum excl 738 and 763nm', 'Chi Sum 763 and 772', 'Chi Sum 738 and 794'],comment="#",skiprows=6)
     Chi_df.to_csv('Te_results.csv',sep=';',index=False)
     
     LR_df=pd.read_csv("LR_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Model LR','738 Exp LR','763 Model LR','763 Exp LR','772 Model LR','772 Exp LR','794 Model LR','794 Exp LR'],comment='#',skiprows=6)
     LR_df.to_csv('LR_results.csv',sep=";",index=False)
                 
-    Te, chi_738, chi_763, chi_772, chi_794, chi_s, chi_s_excl, chi_s_excl_738, chi_s_excl_both = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,1,2,3,4,5,6,7,8))
+    Te, chi_738, chi_763, chi_772, chi_794, chi_s, chi_s_excl, chi_s_excl_738, chi_s_excl_both, chi_763_772, chi_738_794 = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,1,2,3,4,5,6,7,8,9,10))
     
     Te_l_lst = list(Te)
     chi_s_lst = list(chi_s)
@@ -504,7 +508,13 @@ def Te(T,n_m,n_r):
     chi_s_e_lst = list(chi_s_excl)
     chi_s_e_738_lst = list(chi_s_excl_738)
     chi_s_e_both_lst = list(chi_s_excl_both)
+    chi_763_772_lst = list(chi_763_772)
+    chi_738_794_lst = list(chi_738_794)
+    
+    chi_738_lst = list(chi_738)
     chi_763_lst = list(chi_763)
+    chi_772_lst = list(chi_772)
+    chi_794_lst = list(chi_794)     
     
     min_pos = chi_s_lst.index(min(chi_s_lst))
     
@@ -547,12 +557,12 @@ def Te(T,n_m,n_r):
     
     plt.legend(loc='upper right');
     
-    ax1.set_ylim([0,200])
-    ax2.set_ylim([0,200])
-    ax3.set_ylim([0,200])
-    ax4.set_ylim([0,200])
-    ax5.set_ylim([0,200])
-    ax6.set_ylim([0,200])
+    ax1.set_ylim([0,100])
+    ax2.set_ylim([0,100])
+    ax3.set_ylim([0,100])
+    ax4.set_ylim([0,100])
+    ax5.set_ylim([0,100])
+    ax6.set_ylim([0,100])
     plt.show()
     
     plt.show()
@@ -561,13 +571,23 @@ def Te(T,n_m,n_r):
     
     print("The minimum in chi-squared was", chi_s_lst[min_pos], "occurring when Te=", Te[min_pos])
     
-    print("The minimum in chi-squared, excluding 763 is:", chi_s_e_lst[min_pos_excl], "occuring when Te=", Te[min_pos_excl])
+    # print("The minimum in chi-squared, excluding 763 is:", chi_s_e_lst[min_pos_excl], "occuring when Te=", Te[min_pos_excl])
     
     print("The minimum in chi-squared, excluding 738 is:", chi_s_e_738_lst[min_pos_738], "occuring when Te=", Te[min_pos_738])
     
-    print("The minimum in chi-squared, excluding both 763 and 738 is:", chi_s_e_both_lst[min_pos_both], "occuring when Te=", Te[min_pos_both])
+    #print("The minimum in chi-squared, excluding both 763 and 738 is:", chi_s_e_both_lst[min_pos_both], "occuring when Te=", Te[min_pos_both])
+    
+    print("The minimum in chi squared for both 763 and 772 is: ", chi_763_772_lst[chi_763_772_lst.index(min(chi_763_772_lst))], "occuring when Te=", Te[chi_763_772_lst.index(min(chi_763_772_lst))])
+
+    print("The minimum in chi squared for both 738 and 794 is: ", chi_738_794_lst[chi_738_794_lst.index(min(chi_738_794_lst))], "occuring when Te=", Te[chi_738_794_lst.index(min(chi_738_794_lst))])
+    
+    print("The minimum in 738 chi is,", chi_738_lst[chi_738_lst.index(min(chi_738_lst))], "occuring when Te=", Te[chi_738_lst.index(min(chi_738_lst))])
     
     print("The minimum in 763 chi is:", chi_763_lst[min_763], "occuring when Te=", Te[min_763])
+    
+    print("The minimum in 772 chi is,", chi_772_lst[chi_772_lst.index(min(chi_772_lst))], "occuring when Te=", Te[chi_772_lst.index(min(chi_772_lst))])
+    
+    print("The minimum in 794 chi is,", chi_794_lst[chi_794_lst.index(min(chi_794_lst))], "occuring when Te=", Te[chi_794_lst.index(min(chi_794_lst))])
     
     os.rename("Te_results.txt", time.strftime("TeResults/te_results"+i+param+Tg+"K_%Y%m%d%H%M%S.txt")) 
     os.rename("Te_results.csv", time.strftime("TeResults/te_results"+i+param+Tg+"_%Y%m%d%H%M%S.csv"))
@@ -577,11 +597,11 @@ def Te(T,n_m,n_r):
     
     #os.remove("te_results.csv")
     
-    final_T = Te[min_pos_both]
+    final_T = [Te[min_pos],Te[chi_763_772_lst.index(min(chi_763_772_lst))],Te[chi_738_794_lst.index(min(chi_738_794_lst))],Te[min_pos_738]]
     
     return final_T
 
-def e_density(T,i):
+def e_density(T,i,Tname):
     
     nec_750 = 3E12
     nec_451 = 4E11
@@ -610,20 +630,34 @@ def e_density(T,i):
     I_365 = I[14]
     I_360 = I[15]
     
-    # n_e = (1-((I_750/I_365)/(K)))/(((I_750/I_383)/(K*nec_750))-(1/nec_383))
-    n_e = (1-((I_750/I_383)/K)) / (((I_750/I_383)/(K*nec_750))-(1/nec_383))
-    N_e = abs(n_e)
-    N_e_str = str(N_e)
-    print("the electron density for", i, " is: ", "%6.2e" % N_e, "cm-3")
+    n_e365 = (1-((I_750/I_365)/(K)))/(((I_750/I_365)/(K*nec_750))-(1/nec_365))
+    n_e451 = (1-((I_750/I_451)/K)) / (((I_750/I_451)/(K*nec_750))-(1/nec_451))
+    n_e383 = (1-((I_750/I_383)/(K)))/(((I_750/I_383)/(K*nec_750))-(1/nec_383))
     
-    with open(i+'383_E_density.txt', 'w+') as resultsfile:
+    N_e365 = abs(n_e365)
+    N_e451 = abs(n_e451)
+    N_e383 = abs(n_e383)
+    
+    Ne_365_str = str("%8.2e" %N_e365)
+    Ne_451_str = str("%8.2e" %N_e451)
+    Ne_383_str = str("%8.2e" %N_e383)
+    
+    Tname_str = str(Tname)
+    print("the electron density for using 365nm and T=",Tname," and file", i, " is: ", "%6.2e" % N_e365, "cm-3")
+    print("the electron density for using 451nm and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e451, "cm-3")
+    
+    with open(i+Tname_str+param+'E_density.txt', 'w+') as resultsfile:
         resultsfile.write('Datafile: '+i+'\n')
         resultsfile.write('Experiment Name: '+param+'\n')
-        resultsfile.write('Electron density (cm^-3) \n')
-        resultsfile.write(N_e_str)
+        resultsfile.write('Temperature value: '+Tname+'\n')
+        resultsfile.write('Emission Line (nm);Electron density (cm^-3) \n')
+        resultsfile.write('365;'+ Ne_365_str+'\n')
+        resultsfile.write('451;'+ Ne_451_str+'\n')
+        resultsfile.write('383;'+ Ne_383_str+'\n')
     
-    
-    return N_e
+    os.rename(i+Tname_str+param+'E_density.txt', time.strftime("EDensity_Results/"+i+Tname_str+param+"K_%Y%m%d%H%M%S.txt")) 
+      
+    return N_e365, N_e451
 
 #------------------------------------------------------
 #Extract raw Intensity values for parameter chosen. 
@@ -633,12 +667,19 @@ def e_density(T,i):
 #filename = input("What is the name of the file you want to analyse?")
     
 for i in filelist:
+    
+        #Ask user for electon temperature value to be used in electron density calculation
+        #calling integrate function to determine intensity of 451 and 750 emission lines
+        os.chdir(r'C:\Users\beau.bussell\Google Drive\EngD\Research Data\OES\Calibrated\181220')
+        #integrating spectra in file i
+        integrate(i)
+        
         PP_mbar = float(input("What is the process pressure in mbar?"))
         #PP_mbar = 0.0020 #argon partial pressure in mbar
         PP_pa = PP_mbar*100 #argon partial pressure in pascals
                 
         PP_mtorr = PP_mbar/0.00133
-        n_g = ((3.54E13)*PP_mtorr*(273/T_g))#PP_mtorr/(Kb*T_g)#6E13 
+        n_g = ((3.54E13)*PP_mtorr*(273/T_g)) #PP_mtorr/(Kb*T_g)#6E13 
         
         print("the neutral density, calculated using PP, is: ", "%4.2e" % n_g)
         
@@ -647,12 +688,6 @@ for i in filelist:
         # N_g = float(input("What is the ground state density, in x10^13 cm^-3"))
         # n_g = N_g*(1E13)
         
-        #Ask user for electon temperature value to be used in electron density calculation
-        #calling integrate function to determine intensity of 451 and 750 emission lines
-        os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\061020')
-        #integrating spectra in file i
-        integrate(i)
-
         lamda, I = np.loadtxt(i+'_IntegratedIntensity.txt', comments='#', delimiter=',', skiprows=2, unpack=True, 
                                             usecols=(0,1))
         I_corr = I
@@ -692,8 +727,11 @@ for i in filelist:
         #Loading Te model data 
         
         #Extract data and declare variables
-        n_m = final_density[1]
-        n_r = final_density[0]
+        chi_sum = final_density[1]
+        density = final_density[0]
+        n_m = density[1]
+        n_r = density[0]
+        
         
         T = np.loadtxt("Te_Intervals.txt", unpack=True,
                               usecols=(0))
@@ -701,14 +739,37 @@ for i in filelist:
         #T = [3.5,8]
         final_T = Te(T,n_m,n_r)
         
+        sumT = final_T[0]
+        
+        T_763_772 = final_T[1]
+        
+        T_738_794 = final_T[2]
+        
+        Te_excl_738 = final_T[3]
+        
         print("--------------------------------------------------------------")
         print("")
         print("You are now calculating electron density")
         print("")
         
-        e_density(final_T,i)
-
-
+        e_density(sumT,i,"Tsum")
+        
+        e_density(T_763_772,i,"T_763_772")
+        
+        e_density(T_738_794,i,"T_738_794")
+        
+        e_density(Te_excl_738,i,"T_excl_738")
+        
+        # with open(param+'CMresults.txt', 'a+') as file:
+        #     file.write('Filename: '+ i + '\n')
+        #     file.write('\n')
+        #     file.write('Metastable Results \n')
+        #     file.write('n1s4;n1s5;X^2 \n')
+        #     file.write(n_r+';'+n_m+chi_sum+'\n')
+        #     file.write('\n')
+        #     file.write('Electron Temperature Results \n')
+        #     file.write('T (sum all);T (excl 738);T (763 + 773)')
+        
 #----------------------------------------------
 #END OF PROGRAM
 #Calculating time program took to run
