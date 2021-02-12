@@ -23,6 +23,8 @@ from datetime import datetime
 from RadTrap_No2 import radtrap, print_escape
 import pandas as pd
 
+from astro_nist import Fetch_NIST
+
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
 Kb = 1.38E-23*(1E4) #boltzman constant
@@ -44,50 +46,52 @@ p_str = str(p)
 #Process Pressure, n_m, n_r
 
 #List of datafiles to be used in electron density calculations.
-filelist = ['STEERING0001',
-            'STEERING0002']
-#            'RFPOWER0003',
-#            'RFPOWER0004',
-#            'RFPOWER0005',
-#            'RFPOWER0006',
-#            'RFPOWER0007',
-#            'RFPOWER0008',
-#            'RFPOWER0009',
-#            'RFPOWER0010',
-#            'RFPOWER0011']
+filelist = ['PP3KW0001',
+            'PP3KW0002',
+            'PP3KW0003',
+            'PP3KW0004',
+            'PP3KW0005',
+            'PP3KW0006']
+            
+            # #'RFPOWER0002',
+            # #'RFPOWER0003',
+            # 'RFPOWER0004',
+            # #'RFPOWER0005',
+            # #'RFPOWER0006',
+            # #'RFPOWER0007',
+            # 'RFPOWER0008',
+            # #'RFPOWER0009',
+            # #'RFPOWER0010',
+            # 'RFPOWER0011']
            
 #Transition Probabilties and reabsorption coeffcients for 6 Ar lines
 #for BF analysis 
 #units for kij0 = cm^2K^0.5
 #units for Aij = s^-1
 
-#Fetching NIST data
+#Fetching NIST data from NIST database
 
-
+NIST_data = Fetch_NIST()
+Aki = NIST_data['Aki']
 
 #696 j=1s5
 kij_696 = 1.43E-11
-Aij_696 = 6.39E6
-
+Aij_696 = Aki[0]
 #727 j=1s4
 kij_727 = 7.74E-12
-Aij_727 = 1.83E6
-
+Aij_727 = Aki[7]
 #738 j=1s4
 kij_738 = 6.25E-11
-Aij_738 = 8.47E6
-
+Aij_738 = Aki[9]
 #706 j=1s5
 kij_706 = 1.47E-11
-Aij_706 = 3.8E6
-
+Aij_706 = Aki[10]
 #794 j=1s3
 kij_794 = 3.07E-10
-Aij_794 = 18.6E6
-
+Aij_794 = Aki[12]
 #714 j=1s5
 kij_714 = 1.51E-12
-Aij_714 = 0.63E6
+Aij_714 = Aki[14]
 
 #Transition Probabilties and reabsorption coeffcients for 6 Ar lines for Te calculation
 #units for kij0 = cm^2K^0.5
@@ -173,8 +177,6 @@ with open('Density_inputs.txt', 'r') as inputs:
 #test
 # n1s4 =[1,2,3,4,5]
 # n1s5 = [10,20,30,40,50]
-
-#exec(open('astro_nist.py').read())
 
 param = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
 
@@ -629,35 +631,62 @@ def e_density(T,i,Tname):
     I_383 = I[13]
     I_365 = I[14]
     I_360 = I[15]
+    I_425 = I[17]
     
-    n_e365 = (1-((I_750/I_365)/(K)))/(((I_750/I_365)/(K*nec_750))-(1/nec_365))
+    #n_e365 = (1-((I_750/I_365)/(K)))/(((I_750/I_365)/(K*nec_750))-(1/nec_365))
     n_e451 = (1-((I_750/I_451)/K)) / (((I_750/I_451)/(K*nec_750))-(1/nec_451))
     n_e383 = (1-((I_750/I_383)/(K)))/(((I_750/I_383)/(K*nec_750))-(1/nec_383))
+    n_e360 = (1-((I_750/I_360)/(K)))/(((I_750/I_360)/(K*nec_750))-(1/nec_360))
     
-    N_e365 = abs(n_e365)
+    #testing 425 with different methods from boffard/Zhu & Pu
+    n_e425 = (1-((I_750/I_425)/(K)))/(((I_750/I_425)/(K*nec_750))-(1/nec_419))
+    ne_425 = ((I_425/I_750)-(1/K))/(((1/K)/nec_750)-((I_425/I_750)/nec_419))
+    n__e425 = (1-((I_425/I_360)/K)) / (((I_425/I_360)/(K*nec_419))-(1/nec_360))
+
+    
+    #N_e365 = abs(n_e365)
     N_e451 = abs(n_e451)
     N_e383 = abs(n_e383)
+    N_e360 = abs(n_e360)
     
-    Ne_365_str = str("%8.2e" %N_e365)
+    N_e425_boff = abs(n_e425)
+    N_e425_zhu = abs(ne_425)
+    N_e425 = abs(n__e425)
+    
+    #Ne_365_str = str("%8.2e" %N_e365)
     Ne_451_str = str("%8.2e" %N_e451)
     Ne_383_str = str("%8.2e" %N_e383)
+    Ne_360_str = str("%8.2e" %N_e360)
+    
+    Ne_425_str_boff = str("%8.2e" %N_e425_boff)
+    Ne_425_str_zhu = str("%8.2e" %N_e425_zhu)
+    Ne_425_str = str("%8.2e" %N_e425)
+
     
     Tname_str = str(Tname)
-    print("the electron density for using 365nm and T=",Tname," and file", i, " is: ", "%6.2e" % N_e365, "cm-3")
+    #print("the electron density for using 365nm and T=",Tname," and file", i, " is: ", "%6.2e" % N_e365, "cm-3")
     print("the electron density for using 451nm and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e451, "cm-3")
+    print("the electron density for using 383nm and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e383, "cm-3")
+    print("the electron density for using 360nm and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e360, "cm-3")
+    print("the electron density for using 425nm boff and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e425_boff, "cm-3")
+    print("the electron density for using 425nm zhu and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e425_zhu, "cm-3")
+    print("the electron density for using 425nm and 360 and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e425, "cm-3")
     
     with open(i+Tname_str+param+'E_density.txt', 'w+') as resultsfile:
         resultsfile.write('Datafile: '+i+'\n')
         resultsfile.write('Experiment Name: '+param+'\n')
         resultsfile.write('Temperature value: '+Tname+'\n')
         resultsfile.write('Emission Line (nm);Electron density (cm^-3) \n')
-        resultsfile.write('365;'+ Ne_365_str+'\n')
+        resultsfile.write('360;'+ Ne_360_str+'\n')
         resultsfile.write('451;'+ Ne_451_str+'\n')
         resultsfile.write('383;'+ Ne_383_str+'\n')
-    
+        resultsfile.write('425;'+ Ne_425_str_boff+'\n')
+        resultsfile.write('425;'+ Ne_425_str_zhu+'\n')
+        resultsfile.write('425+360' + Ne_425_str+'\n')
+
     os.rename(i+Tname_str+param+'E_density.txt', time.strftime("EDensity_Results/"+i+Tname_str+param+"K_%Y%m%d%H%M%S.txt")) 
       
-    return N_e365, N_e451
+    return N_e451
 
 #------------------------------------------------------
 #Extract raw Intensity values for parameter chosen. 
@@ -670,7 +699,7 @@ for i in filelist:
     
         #Ask user for electon temperature value to be used in electron density calculation
         #calling integrate function to determine intensity of 451 and 750 emission lines
-        os.chdir(r'C:\Users\beau.bussell\Google Drive\EngD\Research Data\OES\Calibrated\181220')
+        os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\181220')
         #integrating spectra in file i
         integrate(i)
         
