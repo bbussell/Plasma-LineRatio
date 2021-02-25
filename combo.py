@@ -46,23 +46,21 @@ p_str = str(p)
 #Process Pressure, n_m, n_r
 
 #List of datafiles to be used in electron density calculations.
-filelist = ['PP3KW0001',
-            'PP3KW0002',
-            'PP3KW0003',
-            'PP3KW0004',
-            'PP3KW0005',
-            'PP3KW0006']
-            
-            # #'RFPOWER0002',
-            # #'RFPOWER0003',
-            # 'RFPOWER0004',
-            # #'RFPOWER0005',
-            # #'RFPOWER0006',
-            # #'RFPOWER0007',
-            # 'RFPOWER0008',
-            # #'RFPOWER0009',
-            # #'RFPOWER0010',
-            # 'RFPOWER0011']
+filelist = ['PLS-LHS-RF0001']
+            # 'PLS-LHS-RF0002',
+            # 'PLS-LHS-RF0003',
+            # 'PLS-LHS-RF0004',
+            # 'PLS-LHS-RF0005',
+            # 'PLS-LHS-RF0006']
+            # 'PLS-RF0008',
+            # 'PLS-RF0009',
+            # 'PLS-RF0010',
+            # 'PLS-RF0011',
+            # 'PLS-RF0012']
+            #'RFPOWER0008',
+            #'RFPOWER0009',
+            #'RFPOWER0010',
+            #'RFPOWER0011']
            
 #Transition Probabilties and reabsorption coeffcients for 6 Ar lines
 #for BF analysis 
@@ -632,6 +630,7 @@ def e_density(T,i,Tname):
     I_365 = I[14]
     I_360 = I[15]
     I_425 = I[17]
+    I_480 = I[18]
     
     #n_e365 = (1-((I_750/I_365)/(K)))/(((I_750/I_365)/(K*nec_750))-(1/nec_365))
     n_e451 = (1-((I_750/I_451)/K)) / (((I_750/I_451)/(K*nec_750))-(1/nec_451))
@@ -661,16 +660,25 @@ def e_density(T,i,Tname):
     Ne_425_str_boff = str("%8.2e" %N_e425_boff)
     Ne_425_str_zhu = str("%8.2e" %N_e425_zhu)
     Ne_425_str = str("%8.2e" %N_e425)
-
     
+    
+    #480/750 ion/atom LR
+    k_o_atom = (2.54E-10)*(T**1.07)*(exp(-9.39/T))
+    k_ion_ion = exp(-23.44-37.25*(exp(-T/1.32)))
+    
+    Ne_480 = (k_o_atom/k_ion_ion)*(I_480/I_750)*n_g  
+    
+    Ne_480_str = str("%8.2e" %Ne_480)
+
     Tname_str = str(Tname)
     #print("the electron density for using 365nm and T=",Tname," and file", i, " is: ", "%6.2e" % N_e365, "cm-3")
-    print("the electron density for using 451nm and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e451, "cm-3")
+    #print("the electron density for using 451nm and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e451, "cm-3")
     print("the electron density for using 383nm and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e383, "cm-3")
     print("the electron density for using 360nm and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e360, "cm-3")
-    print("the electron density for using 425nm boff and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e425_boff, "cm-3")
-    print("the electron density for using 425nm zhu and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e425_zhu, "cm-3")
-    print("the electron density for using 425nm and 360 and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e425, "cm-3")
+    #print("the electron density for using 425nm boff and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e425_boff, "cm-3")
+    #print("the electron density for using 425nm zhu and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e425_zhu, "cm-3")
+    #print("the electron density for using 425nm and 360 and T=",Tname,"and file", i, " is: ", "%6.2e" % N_e425, "cm-3")
+    print("the electron density for using 480nm and 750nm and file", i, "is ", "%6.2e" % Ne_480, "cm-3")
     
     with open(i+Tname_str+param+'E_density.txt', 'w+') as resultsfile:
         resultsfile.write('Datafile: '+i+'\n')
@@ -683,6 +691,7 @@ def e_density(T,i,Tname):
         resultsfile.write('425;'+ Ne_425_str_boff+'\n')
         resultsfile.write('425;'+ Ne_425_str_zhu+'\n')
         resultsfile.write('425+360' + Ne_425_str+'\n')
+        resultsfile.write('480' + Ne_480_str+'\n')
 
     os.rename(i+Tname_str+param+'E_density.txt', time.strftime("EDensity_Results/"+i+Tname_str+param+"K_%Y%m%d%H%M%S.txt")) 
       
@@ -699,7 +708,7 @@ for i in filelist:
     
         #Ask user for electon temperature value to be used in electron density calculation
         #calling integrate function to determine intensity of 451 and 750 emission lines
-        os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\181220')
+        os.chdir(r'C:\Users\beau.bussell\Google Drive\EngD\Research Data\OES\Calibrated\170221')
         #integrating spectra in file i
         integrate(i)
         
@@ -783,11 +792,11 @@ for i in filelist:
         
         e_density(sumT,i,"Tsum")
         
-        e_density(T_763_772,i,"T_763_772")
+        #e_density(T_763_772,i,"T_763_772")
         
-        e_density(T_738_794,i,"T_738_794")
+        #e_density(T_738_794,i,"T_738_794")
         
-        e_density(Te_excl_738,i,"T_excl_738")
+        #e_density(Te_excl_738,i,"T_excl_738")
         
         # with open(param+'CMresults.txt', 'a+') as file:
         #     file.write('Filename: '+ i + '\n')
