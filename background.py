@@ -91,7 +91,7 @@ def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum):
 # EmissionPeakLimits = [(694.8,700.3),(704.8,709.4),(713.7,717.5),(725,730),(736.1,742),(791.1,797.29),(745.1,757.9),(758,769.5),(770.7,775),(382.17,383.4),(360,361.2),(478.45,483.07)]
 # EmissionPeakPlotLimits = [(692,701),(704,710),(711,720),(724.5,731),(732,746),(785,810),(744,760),(756,770),(767,780),(381,384.5),(358,363),(475,485)]
 
-PeakAreaMinusBackgroundArray = []
+#PeakAreaMinusBackgroundArray = []
 MetastablePeakFig, axes = plt.subplots(nrows=2,ncols=3,sharey=True)
 ax696, ax706, ax714, ax727, ax738, ax794 = axes.flatten()
 
