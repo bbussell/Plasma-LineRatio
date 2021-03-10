@@ -10,11 +10,11 @@ Created on Tue Nov 24 11:06:52 2020
 
 import time
 import os
-
+import sys
 start_time = time.time()
 from math import exp,sqrt
 import numpy as np
-from spec_integrate_Ne import integrate
+from background import FetchSpectra, BackgroundCalculationSeries
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 import csv
@@ -24,6 +24,9 @@ from RadTrap_No2 import radtrap, print_escape
 import pandas as pd
 
 from astro_nist import Fetch_NIST
+
+def str_to_class(str):
+    return getattr(sys.modules[__name__], str)
 
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
@@ -46,7 +49,7 @@ p_str = str(p)
 #Process Pressure, n_m, n_r
 
 #List of datafiles to be used in electron density calculations.
-filelist = ['PLS-LHS-RF0001']
+filelist = ['RFPOWER0005']
             # 'PLS-LHS-RF0002',
             # 'PLS-LHS-RF0003',
             # 'PLS-LHS-RF0004',
@@ -262,14 +265,14 @@ def LR_mod(k,T,a,E,km,am,Em,kr,ar,Er,Rij,Rmn,n_m,n_r):
 
 def LR(n1s4,n1s5):
     
-        for a, b in zip(n1s4,n1s5):
+        for ResonantModelValue, MetastableModelValue in zip(n1s4,n1s5):
         
                 #-----------------------------------
                 #Experimental Results from J Boffard
                 #1mtorr
                 
-                n_1s5 = b #metastable density (cm^-3)
-                n_1s4 = a #resonant density (cm^-3)
+                n_1s5 = MetastableModelValue #metastable density (cm^-3)
+                n_1s4 = ResonantModelValue #resonant density (cm^-3)
                 
                 #-----------------------------------
                 #Relation between total m and r 1sx levels
@@ -315,7 +318,7 @@ def LR(n1s4,n1s5):
                 with open('mod_results.txt', 'a+') as mod_results:
                 #for i in range(len(n1s4)):
                  #   mod_results.write("%d %d %d\n" % (n1s4[i],n1s5[i],chi_sum))
-                    mod_results.write("%7.2e %7.2e %6.2f\n" % (a,b,chi_sum))
+                    mod_results.write("%7.2e %7.2e %6.2f\n" % (ResonantModelValue,MetastableModelValue,chi_sum))
                     
                     #printing results to screen
         with open('mod_results.txt', 'a+') as mod_results:
@@ -708,10 +711,21 @@ for i in filelist:
     
         #Ask user for electon temperature value to be used in electron density calculation
         #calling integrate function to determine intensity of 451 and 750 emission lines
-        os.chdir(r'C:\Users\beau.bussell\Google Drive\EngD\Research Data\OES\Calibrated\170221')
+        os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\181220')
         #integrating spectra in file i
-        integrate(i)
+       
+        # PeakAreaMinusBackgroundArray = []
+        # MetastablePeakFig, axes = plt.subplots(nrows=2,ncols=3,sharey=True)
+        # ax696, ax706, ax714, ax727, ax738, ax794 = axes.flatten()
         
+        # AllOtherPeaksFig, axes = plt.subplots(nrows=2,ncols=3,sharey=True)
+        # ax750, ax763, ax772, ax383, ax360, ax480 = axes.flatten()
+        
+        SpectraResult = FetchSpectra(i)
+        Wavelength = SpectraResult[0]
+        InterpolatedSpectrum = SpectraResult[1]
+        BackgroundCalculationSeries(Wavelength, InterpolatedSpectrum)
+       
         PP_mbar = float(input("What is the process pressure in mbar?"))
         #PP_mbar = 0.0020 #argon partial pressure in mbar
         PP_pa = PP_mbar*100 #argon partial pressure in pascals
