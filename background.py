@@ -22,16 +22,23 @@ def FetchSpectra(filename):
     NormalisedSpectraData = ReadAndNormaliseIntegrationTime(filename)
     NormalisedIrradiance = NormalisedSpectraData[0]
     Wavelength = NormalisedSpectraData[1]
-#NormalisedSpectraData_df = pd.DataFrame()
-#NormalisedSpectraData_df['Wavelength']=pd.Series(Wavelength)
-#NormalisedSpectraData_df['Normalised Irradiance']=pd.Series(NormalisedIrradiance)
     InterpolatedSpectrum = InterpolateNormalisedSpectrum(NormalisedIrradiance,Wavelength)
     
     return Wavelength, InterpolatedSpectrum
 
 def Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum):
     RawAreaOfPeak = InterpolatedSpectrum.integral(LowerPeakLimit,UpperPeakLimit)
-    Background= 0.5*(InterpolatedSpectrum(LowerPeakLimit)+InterpolatedSpectrum(UpperPeakLimit))*(UpperPeakLimit-LowerPeakLimit)
+    LowerIrradianceWithEdgeCorrection = 0.95*(InterpolatedSpectrum(LowerPeakLimit))
+    UpperIrradianceWithEdgeCorrection = 0.95*(InterpolatedSpectrum(UpperPeakLimit))
+    print("The lower peak limit is: ",InterpolatedSpectrum(LowerPeakLimit))
+    print("The lower peak limit with edge correction is: ",LowerIrradianceWithEdgeCorrection)
+    print("")
+    print("The upper peak limit is: ",InterpolatedSpectrum(UpperPeakLimit))
+    print("The upper peak limit with edge correction is: ",UpperIrradianceWithEdgeCorrection)
+    print("")
+    
+    
+    Background= 0.5*(LowerIrradianceWithEdgeCorrection+UpperIrradianceWithEdgeCorrection)*(UpperPeakLimit-LowerPeakLimit)
     print("The background is ", Background)
     print("The raw area is ", RawAreaOfPeak)
     PeakAreaMinusBackground = 0
@@ -49,12 +56,24 @@ def Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum):
     BackgroundProportion = (Background/RawAreaOfPeak)*100
     print("The background proportion of raw area is:", BackgroundProportion)
     
-    return PeakAreaMinusBackground
+    return PeakAreaMinusBackground, LowerIrradianceWithEdgeCorrection, UpperIrradianceWithEdgeCorrection
 
-def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum):
+def SaveBackgroundCorrectedIrradianceToFile(EmissionPeakArray,array,File):
+    BackgroundCorrectedSpectra = pd.DataFrame(EmissionPeakArray,columns=["Wavelength"])
+    BackgroundCorrectedSpectra['Background Corrected Irradiance']=pd.Series(array)
+    with open(File+'_IntegratedIntensity.txt', 'w') as resultsfile:
+        resultsfile.write('Datafile: '+File+'\n')   
+    BackgroundCorrectedSpectra.to_csv(File+'_IntegratedIntensity.txt', index=False,mode="a")
+    
+    return BackgroundCorrectedSpectra
+
+
+def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum,File):
     EmissionPeakArray = [696,706,714,727,738,794,750,763,772,383,360,480]
-    EmissionPeakLimits = [(694.8,700.3),(704.8,709.4),(713.7,717.5),(725,730),(736.1,742),(791.1,797.29),(745.1,757.9),(758,769.5),(770.7,775),(382.17,383.4),(360,361.2),(478.45,483.07)]
+    EmissionPeakLimits = [(694.8,700.3),(704.8,709.4),(713.7,717.5),(725,730),(736.1,740.9),(791.1,797.29),(745.1,757.9),(758,769.5),(770.7,775),(382.17,383.4),(360,361.2),(478.45,483.07)]
     EmissionPeakPlotLimits = [(692,701),(704,710),(711,720),(724.5,731),(732,746),(785,810),(744,760),(756,770),(767,780),(381,384.5),(358,363),(475,485)]
+    
+    array = []
     
     for EmissionPeak, PlotLimit, PeakLimit in zip(EmissionPeakArray,EmissionPeakPlotLimits,EmissionPeakLimits):
         LowerPeakLimit = PeakLimit[0]
@@ -63,10 +82,19 @@ def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum):
         print("")
         print("Peak:",EmissionPeak,"nm")
         print("")
-        PeakAreaMinusBackground = Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum)
         
+        # if EmissionPeak == 738:
+        #     ExtendedBackground = Background_Calculation(734,745,InterpolatedSpectrum)
+        #     LowerBackground = 
+        #     PeakAreaMinusBackground = Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum)
+
+        
+        BackgroundCalculationResult = (Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum))
+        PeakAreaMinusBackground = BackgroundCalculationResult[0]
+        LowerIrradianceWithEdgeCorrection = BackgroundCalculationResult[1]
+        UpperIrradianceWithEdgeCorrection = BackgroundCalculationResult[2]
+               
         EmissionPeakPlotName = str_to_class('ax'+str(EmissionPeak))
-       
         EmissionPeakPlotName.plot(Wavelength,InterpolatedSpectrum(Wavelength),color='orange',lw=0.75,label='Interpolated spectra',linestyle='dashed')
         EmissionPeakPlotName.set_xlim(PlotLimit)
         EmissionPeakPlotName.set_ylim(0,0.05)
@@ -76,37 +104,33 @@ def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum):
         EmissionPeakPlotName.axvline(x=UpperPeakLimit,lw=0.2,color='black')
             
         ix = LowerPeakLimit,UpperPeakLimit
-        iy = InterpolatedSpectrum(LowerPeakLimit), InterpolatedSpectrum(UpperPeakLimit)
+        iy = (LowerIrradianceWithEdgeCorrection, UpperIrradianceWithEdgeCorrection)
         
         verts = [(LowerPeakLimit,0), *zip(ix,iy), (UpperPeakLimit,0)]
         poly = Polygon(verts,facecolor='0.9',edgecolor='0.5')
         EmissionPeakPlotName.add_patch(poly)
         plt.show
-        
-    return PeakAreaMinusBackground
     
+        array.append(PeakAreaMinusBackground)
+        print("")
+        print("The Irradiance array is: ",array)
+        
+    BackgroundCorrectedSpectra = SaveBackgroundCorrectedIrradianceToFile(EmissionPeakArray, array, File)
 
-# EmissionPeakBackgroundLimitsArray = [(694.7,700.3),(704.8,709.4),(713.5,717.5),(725,730),(732.9,745),(791.1,797.29),(745,758),(758,769.5),(769.8,779.5),(382.17,383.92),(360,361.5),(478.45,483.07)]
-# EmissionPeakArray = [696,706,714,727,738,794,750,763,772,383,360,480]
-# EmissionPeakLimits = [(694.8,700.3),(704.8,709.4),(713.7,717.5),(725,730),(736.1,742),(791.1,797.29),(745.1,757.9),(758,769.5),(770.7,775),(382.17,383.4),(360,361.2),(478.45,483.07)]
-# EmissionPeakPlotLimits = [(692,701),(704,710),(711,720),(724.5,731),(732,746),(785,810),(744,760),(756,770),(767,780),(381,384.5),(358,363),(475,485)]
+    return PeakAreaMinusBackground, BackgroundCorrectedSpectra
 
-PeakAreaMinusBackgroundArray = []
 MetastablePeakFig, axes = plt.subplots(nrows=2,ncols=3,sharey=True)
 ax696, ax706, ax714, ax727, ax738, ax794 = axes.flatten()
 
 AllOtherPeaksFig, axes = plt.subplots(nrows=2,ncols=3,sharey=True)
 ax750, ax763, ax772, ax383, ax360, ax480 = axes.flatten()
 
-# SpectraResult = FetchSpectra('RFPOWER0005')
+# filename='RFPOWER0005'
+# SpectraResult = FetchSpectra(filename)
 # Wavelength = SpectraResult[0]
 # InterpolatedSpectrum = SpectraResult[1]
-# BackgroundCalculationSeries(Wavelength, InterpolatedSpectrum)
 
-
-
-
-
-
+# PeakAreaMinusBackground = (BackgroundCalculationSeries(Wavelength, InterpolatedSpectrum,filename))[0]
+# BackgroundCorrectedSpectra = (BackgroundCalculationSeries(Wavelength, InterpolatedSpectrum,filename))[1]
 
 
