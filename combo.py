@@ -20,7 +20,7 @@ from mpl_toolkits import mplot3d
 import csv
 from datetime import datetime
 #import RadTrap_No2 as RT # import rad trap code and run
-from RadTrap_No2 import radtrap, print_escape
+from RadTrapAndEscapeFactorCalculation import radtrap, print_escape
 import pandas as pd
 
 from astro_nist import Fetch_NIST
@@ -28,26 +28,29 @@ from astro_nist import Fetch_NIST
 def str_to_class(str):
     return getattr(sys.modules[__name__], str)
 
+def pause():
+    programPause = input("Press the <ENTER> key to continue...")
+
 datestring = datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
-Kb = 1.38E-23*(1E4) #boltzman constant
-#M = 9.109E-31
-M = 39.948# 6.6335209E-23 #kg
-#M = 6.6335209E-26 #atomic mass of Ar(kg)
-R = 8.31446261815324*(1E3)
+BoltzmannConstant = 1.38E-23*(1E4) #boltzman constant
+#AtomicMassArgon = 9.109E-31
+AtomicMassArgon = 39.948# 6.6335209E-23 #kg
+#AtomicMassArgon = 6.6335209E-26 #atomic mass of Ar(kg)
+GasConstant = 8.31446261815324*(1E3)
 GasTemperatureInKelvin = 600 #757 = 15mtorr #gas temperature (K)
-p = 5.0 #charactersitic readsorption length (cm)
+CharacteristicLength = 5.0 #charactersitic readsorption length (cm)
 
 GasTemperatureInKelvin_str = str(GasTemperatureInKelvin)
-p_str = str(p)
+CharacteristicLength_str = str(CharacteristicLength)
 
 #!!!!!!!!!!!!!!!!!!!!!!!
 #Before running, ensure all parameters are correct. Especially:
 #Process Pressure, n_m, n_r
 
 #List of datafiles to be used in electron density calculations.
-filelist = ['RFPOWER0005']
-            # 'RFPOWER0003',
+filelist = ['RFPOWER0001',
+            'RFPOWER0011']
             # 'RFPOWER0005',
             # 'RFPOWER0007',
             # 'RFPOWER0010']
@@ -207,13 +210,13 @@ def CalculateReabsorptionCoefficient(k,n):
 
 #Function for calculation of escape factors
 
-def CalculateEscapeFactor(k,n,p):
-    return (2-exp((-CalculateReabsorptionCoefficient(k,n)*p)/1000))/(1+(CalculateReabsorptionCoefficient(k,n)*p))
+def CalculateEscapeFactor(k,n,CharacteristicLength):
+    return (2-exp((-CalculateReabsorptionCoefficient(k,n)*CharacteristicLength)/1000))/(1+(CalculateReabsorptionCoefficient(k,n)*CharacteristicLength))
 
 #Function for calculation of Model Line Ratios
                 
-def CalculateModelBranchingFraction(kij,kik,Aij,Aik,nij,nik,p):
-    return (Aij*CalculateEscapeFactor(kij,nij,p))/(Aik*CalculateEscapeFactor(kik,nik,p))
+def CalculateModelBranchingFraction(kij,kik,Aij,Aik,nij,nik,CharacteristicLength):
+    return (Aij*CalculateEscapeFactor(kij,nij,CharacteristicLength))/(Aik*CalculateEscapeFactor(kik,nik,CharacteristicLength))
 
 #Function for calculation of experimental line ratios
 
@@ -250,7 +253,7 @@ def k_o(WavelengthInNm,gi,gj,Aij):
     #print("term 1 =",term1)
     term2 = gi/gj
     #print("term 2 =", term2)    
-    term3 = Aij*(sqrt(M))/((sqrt(2)*(sqrt(R))))
+    term3 = Aij*(sqrt(AtomicMassArgon))/((sqrt(2)*(sqrt(GasConstant))))
     #print("term 3 =", term3)    
     result = term1*term2*term3    
     #arr_k = np.array(result)    
@@ -283,19 +286,19 @@ def LR(ResonantDensityIncm3,MetastableDensityIncm3):
                 #Setting model LR's
                 
                 #print('The 696/727 model LR is:')
-                #print(CalculateModelBranchingFraction(kij_696,kij_727,Aij_696,Aij_727,n_1s5,n_1s4,p))
+                #print(CalculateModelBranchingFraction(kij_696,kij_727,Aij_696,Aij_727,n_1s5,n_1s4,CharacteristicLength))
                 
-                LRm1=CalculateModelBranchingFraction(kij_696,kij_727,Aij_696,Aij_727,n_1s5,n_1s4,p)
+                LRm1=CalculateModelBranchingFraction(kij_696,kij_727,Aij_696,Aij_727,n_1s5,n_1s4,CharacteristicLength)
                 
                 #print('The 738/706 model LR is:')
-                #print(CalculateModelBranchingFraction(kij_738,kij_706,Aij_738,Aij_706,n_1s4,n_1s5,p))
+                #print(CalculateModelBranchingFraction(kij_738,kij_706,Aij_738,Aij_706,n_1s4,n_1s5,CharacteristicLength))
                 
-                LRm2=CalculateModelBranchingFraction(kij_738,kij_706,Aij_738,Aij_706,n_1s4,n_1s5,p)
+                LRm2=CalculateModelBranchingFraction(kij_738,kij_706,Aij_738,Aij_706,n_1s4,n_1s5,CharacteristicLength)
                 
                 #print('The 794/714 model LR is:')
-                #print(CalculateModelBranchingFraction(kij_794,kij_714,Aij_794,Aij_714,n_1s3,n_1s5,p))
+                #print(CalculateModelBranchingFraction(kij_794,kij_714,Aij_794,Aij_714,n_1s3,n_1s5,CharacteristicLength))
                 
-                LRm3=CalculateModelBranchingFraction(kij_794,kij_714,Aij_794,Aij_714,n_1s3,n_1s5,p)
+                LRm3=CalculateModelBranchingFraction(kij_794,kij_714,Aij_794,Aij_714,n_1s3,n_1s5,CharacteristicLength)
                 
                 #Setting experimental LR's
                 
@@ -394,14 +397,14 @@ def Te(T,n_m,n_r):
     os.rename("live_density.txt", ("live_density"+File+param+GasTemperatureInKelvin_str+'.txt'))
     
     
-    radtrap(n_ij,A,g_i,g_j,n_j,p,GasTemperatureInKelvin,M,R)
+    radtrap(n_ij,A,g_i,g_j,n_j,CharacteristicLength,GasTemperatureInKelvin,AtomicMassArgon,GasConstant)
     print("")
     print("radtrap complete")
     print("")
     
     n_ij, g_i, g_j, A, n_j, ko, k_ij = np.loadtxt("line_data_full.txt", comments='#', delimiter=' ', unpack=True, 
                                    usecols=(0,1,2,3,4,5,6))   
-    print_escape(n_ij,g_i,g_j,A,n_j,ko,k_ij,p)
+    print_escape(n_ij,g_i,g_j,A,n_j,ko,k_ij,CharacteristicLength)
     
     print("")
     print("escape complete")
@@ -416,7 +419,7 @@ def Te(T,n_m,n_r):
         resultsfile.write('Filename: ' + File + '\n')
         resultsfile.write('Experiment Name: ' + param + '\n')
         resultsfile.write('Gas Temperature (K) = ' + GasTemperatureInKelvin_str + '\n')
-        resultsfile.write('Characteristic length (cm) = '+ p_str + '\n')
+        resultsfile.write('Characteristic length (cm) = '+ CharacteristicLength_str + '\n')
         
     with open('LR_results.txt', 'w') as resultsfile:
         resultsfile.write('Electron Temperature Results - Raw Line Ratio Data\n')
@@ -424,7 +427,7 @@ def Te(T,n_m,n_r):
         resultsfile.write('Filename: ' + File + '\n')
         resultsfile.write('Experiment Name: ' + param + '\n')
         resultsfile.write('Gas Temperature (K) = ' + GasTemperatureInKelvin_str + '\n')
-        resultsfile.write('Characteristic length (cm) = '+ p_str + '\n')
+        resultsfile.write('Characteristic length (cm) = '+ CharacteristicLength_str + '\n')
     
     for a in T:
                 
@@ -441,10 +444,17 @@ def Te(T,n_m,n_r):
         R_763 = Rad[5]
         R_772_3 = Rad[6]
         
+        AverageRadTrap_772 = (R_772_4 + R_772_3)/2
+        AverageRadTrap_750 = (R_750 + R_751)/2
+        
+        
         #738/750
         LR_738 = LR_mod(kG_738,a,alphaG_738,EG_738,kM_738,alphaM_738,EM_738,kR_738,alphaR_738,ER_738,R_738,R_750,n_m,n_r)
         #print("The 738/750 line ratio is ", LR_738, "for Te =", a)
         #print("-------------------------")
+        
+        
+        
         LR_763 = LR_mod(kG_763,a,alphaG_763,EG_763,kM_763,alphaM_763,EM_763,kR_763,alphaR_763,ER_763,R_763,R_750,n_m,n_r)
         #print("The 763/750 line ratio is, ", LR_763, "for Te =", a)
         
@@ -457,6 +467,7 @@ def Te(T,n_m,n_r):
         
         LR_794 = LR_mod(kG_795,a,alphaG_795,EG_795,kM_795,alphaM_795,EM_795,kR_795,alphaR_795,ER_795,R_794,R_750,n_m,n_r)
         #print("The 794/750 line ratio is, ", LR_794, "for Te =", a)
+        
         
         chi_sum = chi_squared(LR_738,Exp_738,0.05) + chi_squared(LR_763,Exp_763,0.05) + chi_squared(LR_772,Exp_772,0.1) + chi_squared(LR_794,Exp_794,0.1)
         # print("")
@@ -490,21 +501,23 @@ def Te(T,n_m,n_r):
         
         chi_738_794 = chi_738 + chi_794
         
+        chi_excl_772 = chi_738 + chi_794 + chi_763
+        
         with open('Te_results.txt', 'a+') as te_results:
             #for i in range(len(ResonantDensityIncm3)):
              #   mod_results.write("%d %d %d\n" % (ResonantDensityIncm3[i],MetastableDensityIncm3[i],chi_sum))
-            te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum, chi_excl, chi_s_e_738, chi_s_e_both,chi_763_772, chi_738_794))
+            te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (a,chi_738, chi_763, chi_772, chi_794, chi_sum, chi_excl, chi_s_e_738, chi_s_e_both,chi_763_772, chi_738_794, chi_excl_772))
             
         with open("LR_results.txt", 'a+') as lr_results:
             lr_results.write("%4.2f %5.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n" % (a,LR_738,Exp_738,LR_763,Exp_763,LR_772,Exp_772,LR_794,Exp_794))
         
-    Chi_df=pd.read_csv("Te_results.txt",sep=" ",names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum', 'Chi Sum excl. 763nm', 'Chi Sum excl. 738nm', 'Chi Sum excl 738 and 763nm', 'Chi Sum 763 and 772', 'Chi Sum 738 and 794'],comment="#",skiprows=6)
+    Chi_df=pd.read_csv("Te_results.txt",sep=" ",names=['Electron Temperature (eV)','738 Chi','763 Chi','772 Chi','794 Chi','Chi Sum', 'Chi Sum excl. 763nm', 'Chi Sum excl. 738nm', 'Chi Sum excl 738 and 763nm', 'Chi Sum 763 and 772', 'Chi Sum 738 and 794', 'Chi Sum excl 772nm'],comment="#",skiprows=6)
     Chi_df.to_csv('Te_results.csv',sep=';',index=False)
     
     LR_df=pd.read_csv("LR_results.txt",sep=" ",header=None,names=['Electron Temperature (eV)','738 Model LR','738 Exp LR','763 Model LR','763 Exp LR','772 Model LR','772 Exp LR','794 Model LR','794 Exp LR'],comment='#',skiprows=6)
     LR_df.to_csv('LR_results.csv',sep=";",index=False)
                 
-    Te, chi_738, chi_763, chi_772, chi_794, chi_s, chi_s_excl, chi_s_excl_738, chi_s_excl_both, chi_763_772, chi_738_794 = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,1,2,3,4,5,6,7,8,9,10))
+    Te, chi_738, chi_763, chi_772, chi_794, chi_s, chi_s_excl, chi_s_excl_738, chi_s_excl_both, chi_763_772, chi_738_794, chi_excl_772 = np.genfromtxt("Te_results.csv", delimiter=";", skip_header=1, unpack=True, usecols=(0,1,2,3,4,5,6,7,8,9,10,11))
     
     Te_l_lst = list(Te)
     chi_s_lst = list(chi_s)
@@ -514,6 +527,7 @@ def Te(T,n_m,n_r):
     chi_s_e_both_lst = list(chi_s_excl_both)
     chi_763_772_lst = list(chi_763_772)
     chi_738_794_lst = list(chi_738_794)
+    chi_excl_772_lst = list(chi_excl_772)
     
     chi_738_lst = list(chi_738)
     chi_763_lst = list(chi_763)
@@ -530,6 +544,7 @@ def Te(T,n_m,n_r):
     
     min_763 = chi_763_lst.index(min(chi_763_lst))
     
+    min_excl_772 = chi_excl_772_lst.index(min(chi_excl_772_lst))
     
     #plotting chi-sum 
     
@@ -559,18 +574,13 @@ def Te(T,n_m,n_r):
     ax8 = fig.add_subplot(111)
     ax8.plot(Te,chi_s_excl_both, c='black', label='chi-sum excl both')
     
+    ax9 = fig.add_subplot(111)
+    ax9.plot(Te,chi_excl_772, c='brown',label='chi-sum excl 772')
+    
     plt.legend(loc='upper right');
     
     ax1.set_ylim([0,100])
-    ax2.set_ylim([0,100])
-    ax3.set_ylim([0,100])
-    ax4.set_ylim([0,100])
-    ax5.set_ylim([0,100])
-    ax6.set_ylim([0,100])
     plt.show()
-    
-    plt.show()
-    
     print('------------------------------------------------------------------')
     
     print("The minimum in chi-squared was", chi_s_lst[min_pos], "occurring when Te=", Te[min_pos])
@@ -584,6 +594,8 @@ def Te(T,n_m,n_r):
     print("The minimum in chi squared for both 763 and 772 is: ", chi_763_772_lst[chi_763_772_lst.index(min(chi_763_772_lst))], "occuring when Te=", Te[chi_763_772_lst.index(min(chi_763_772_lst))])
 
     print("The minimum in chi squared for both 738 and 794 is: ", chi_738_794_lst[chi_738_794_lst.index(min(chi_738_794_lst))], "occuring when Te=", Te[chi_738_794_lst.index(min(chi_738_794_lst))])
+    
+    print("The minimum in chi squared for all excl 772 is: ", chi_excl_772_lst[chi_excl_772_lst.index(min(chi_excl_772_lst))], "occuring when Te=", Te[chi_excl_772_lst.index(min(chi_excl_772_lst))])
     
     print("The minimum in 738 chi is,", chi_738_lst[chi_738_lst.index(min(chi_738_lst))], "occuring when Te=", Te[chi_738_lst.index(min(chi_738_lst))])
     
@@ -693,7 +705,7 @@ for File in filelist:
     
         #Ask user for electon temperature value to be used in electron density calculation
         #calling integrate function to determine intensity of 451 and 750 emission lines
-        os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\181220')
+        os.chdir(r'C:\Users\beau.bussell\Google Drive\EngD\Research Data\OES\Calibrated\181220')
         
         SpectraResult = FetchSpectra(File)
         Wavelength = SpectraResult[0]
@@ -704,7 +716,7 @@ for File in filelist:
         ProcessPressureinPa= ProcessPressureInmbar*100 #argon partial pressure in pascals
                 
         ProcessPressureInmtorr = ProcessPressureInmbar/0.00133
-        NeutralDensity = ((3.54E13)*ProcessPressureInmtorr*(273/GasTemperatureInKelvin)) #PP_mtorr/(Kb*GasTemperatureInKelvin)#6E13 
+        NeutralDensity = ((3.54E13)*ProcessPressureInmtorr*(273/GasTemperatureInKelvin)) #PP_mtorr/(BoltzmannConstant*GasTemperatureInKelvin)#6E13 
         
         print("the neutral density, calculated using PP, is: ", "%4.2e" % NeutralDensity)
         
@@ -735,10 +747,14 @@ for File in filelist:
             resultsfile.write('Filename:' + File + '\n')
             resultsfile.write('Experiment Name: ' + param + '\n')
             resultsfile.write('Gas Temperature (K) = ' + GasTemperatureInKelvin_str + '\n')
-            resultsfile.write('Characteristic length (cm) = '+ p_str + '\n')
+            resultsfile.write('Characteristic length (cm) = '+ CharacteristicLength_str + '\n')
             resultsfile.write('ResonantDensityIncm3 ns15 Chi-Squared \n')
         #Executing function to calculate n_m and n_r
         final_density = LR(ResonantDensityIncm3,MetastableDensityIncm3)
+        
+        current_time = time.time() - start_time
+        print("The time taken to measure resonant and metastable density is:", current_time)
+        pause()
         
         #Calculation of electron temperature by looping through Te values
         #------------------
@@ -776,6 +792,10 @@ for File in filelist:
         print("")
         print("You are now calculating electron density")
         print("")
+        
+        current_time = time.time() - current_time
+        print("The time taken to measure electron temperature is: ", current_time)
+        pause()
         
         e_density(sumT,File,"Tsum")
         
