@@ -90,11 +90,11 @@ def Fetch_NIST():
 
     return all_lines
 
-print("The spectral data is: ")
-print(" ")
-print(Fetch_NIST())
+# print("The spectral data is: ")
+# print(" ")
+# print(Fetch_NIST())
 
-fetched_lines = Fetch_NIST()
+# fetched_lines = Fetch_NIST()
 
 #total_table = join(table,table2)
 #print(total_table)
