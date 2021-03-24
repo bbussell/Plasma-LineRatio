@@ -288,20 +288,15 @@ def PlotLoss(File,ExperimentalParameter,GasTemperatureInKelvin_str):
     ElectronTemperature = ModelResultsInArrayFormat[0]
     
     fig = plt.figure()
-    ax1 = fig.add_subplot(111)
-    ax1.plot(ElectronTemperature, ModelResultsInArrayFormat[1], c='b', label='X^2 for 738/750nm')
-    ax2 = fig.add_subplot(111)
-    ax2.plot(ElectronTemperature,ModelResultsInArrayFormat[2], c='r', label='X^2 for 763/750nm')
-    ax3 = fig.add_subplot(111)
-    ax3.plot(ElectronTemperature,ModelResultsInArrayFormat[3], c='g',label='X^2 for 772/750nm')
-    ax4 = fig.add_subplot(111)
-    ax4.plot(ElectronTemperature,ModelResultsInArrayFormat[4], c='y',label='X^2 for 794/750nm')
-    ax5 = fig.add_subplot(111)
-    ax5.plot(ElectronTemperature,ModelResultsInArrayFormat[5], c='magenta',label='X^2 for all lines')
-    ax6 = fig.add_subplot(111)
-    ax6.plot(ElectronTemperature,ModelResultsInArrayFormat[6], c='orange',label='X^2 for all excl. 772nm')
+    ax = fig.add_subplot(111)
+    ax.plot(ElectronTemperature,ModelResultsInArrayFormat[1],c='b', label='X^2 for 738/750nm')
+    ax.plot(ElectronTemperature,ModelResultsInArrayFormat[2],c='r', label='X^2 for 763/750nm')
+    ax.plot(ElectronTemperature,ModelResultsInArrayFormat[3],c='g',label='X^2 for 772/750nm')
+    ax.plot(ElectronTemperature,ModelResultsInArrayFormat[4],c='y',label='X^2 for 794/750nm')
+    ax.plot(ElectronTemperature,ModelResultsInArrayFormat[5],c='magenta',label='X^2 for all lines')
+    ax.plot(ElectronTemperature,ModelResultsInArrayFormat[6],c='orange',label='X^2 for all excl. 772nm')    
     plt.legend(loc='upper right');
-    ax1.set_ylim([0,100])
+    ax.set_ylim([0,100])
     plt.show()
     
     os.rename("Te_results.txt", time.strftime("TeResults/te_results"+File+ExperimentalParameter+GasTemperatureInKelvin_str+"K_%Y%m%d%H%M%S.txt")) 
