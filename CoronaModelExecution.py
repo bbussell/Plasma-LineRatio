@@ -7,9 +7,11 @@ Created on Tue Mar 23 20:13:41 2021
 import time
 start_time = time.time()
 from datetime import datetime
+import numpy as np
 import os
 from MetaResonantDensityCalculation import ExtractDensityInputs, CalculateNeutralDensity, PrepareResultsFile, ModelMetastableAndResonantDensity
 from ElectronTemperatureCalculation import FetchModelElectronTemperatureInputs,CalculateElectronTemperature,PlotLoss
+from CalculateElectronDensity import CalculateAllElectronDensity, PrintElectronDensityResultsToScreen, PrintElectronDensityResultsToFile
 
 def pause():
     programPause = input("Press the <ENTER> key to continue...")
@@ -24,7 +26,9 @@ CharacteristicLength = 5
 GasTemperatureInKelvin_str = str(GasTemperatureInKelvin)
 CharacteristicLength_str = str(CharacteristicLength)
 
-filelist = ['RFPOWER0005']
+filelist = ['RFPOWER0001',
+            'RFPOWER0005',
+            'RFPOWER0011']
 
 ExperimentalParameter = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
 
@@ -52,10 +56,19 @@ for File in filelist:
     CalculateElectronTemperature(ElectronTemperatureInputs,FinalCalculatedDensity,NormalisedIrradiance,ExperimentalParameter,File,GasTemperatureInKelvin_str,datestring,CharacteristicLength_str,NeutralDensity)
     print("")   
     print("Finding minimum in X^2 and corresponding Electron Temperature...")
-    PlotLoss(File,ExperimentalParameter,GasTemperatureInKelvin_str)
+    FinalElectronTemperature = PlotLoss(File,ExperimentalParameter,GasTemperatureInKelvin_str)
     print("Minimum found.")
     print("Electron Temperature Modelling Complete")
-
+    
+    print("")
+    print("Calculating Electron Density...")
+    FinalElectronTemperature = np.array(FinalElectronTemperature)
+    AllElectronDensities = CalculateAllElectronDensity(NormalisedIrradiance,FinalElectronTemperature[1],NeutralDensity)
+    PrintElectronDensityResultsToScreen(AllElectronDensities,FinalElectronTemperature[1],File)
+    PrintElectronDensityResultsToFile(AllElectronDensities,FinalElectronTemperature[1],ExperimentalParameter,File)
+    print("")
+    print("Electron Density Calculated. Results Printed to file.")
+    
 current_time = time.time() - start_time
-print("The time taken to measure resonant and metastable density is:", current_time)
+print("The time taken to measure everything is:", current_time)
     

@@ -46,7 +46,7 @@ def ko_explicit(lamda,gi,gj,Aij,M,R):
     return T2
 
 def reab_coeff_calc(n_ij,g_i,g_j,A,n_j,T_g,M,R):
-        with open("line_data_full.txt","a+") as datafile:      
+        with open("line_data_full.txt","w+") as datafile:      
             for a, b, c, d, e in zip(n_ij,g_i,g_j,A,n_j):
                 #print("ko for ", a, "nm is: ",ko_calc(a,b,c,d))
                 ko = ko_explicit(a,b,c,d,M,R) 
