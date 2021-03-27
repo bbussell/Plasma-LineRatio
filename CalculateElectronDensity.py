@@ -43,7 +43,7 @@ def CalculateAllElectronDensity(NormalisedIrradiance,ElectronTemperature,Neutral
     return ElectronDensity_383,ElectronDensity_360,ElectronDensity_480
 
 def PrintElectronDensityResultsToScreen(AllElectronDensities,ElectronTemperature,File): 
-    print("the electron density for using 383nm and T=",ElectronTemperature,"and file", File, " is: ", "%6.2e" % AllElectronDensities[2], "cm-3")
+    print("the electron density for using 383nm and T=",ElectronTemperature,"and file", File, " is: ", "%6.2e" % AllElectronDensities[0], "cm-3")
     print("the electron density for using 360nm and T=",ElectronTemperature,"and file", File, " is: ", "%6.2e" % AllElectronDensities[1], "cm-3")
     print("the electron density for the 480nm/750nm pair, with T=",ElectronTemperature, "and file", File, "is ", "%6.2e" % AllElectronDensities[2], "cm-3")
     
