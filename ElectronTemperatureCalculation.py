@@ -206,39 +206,36 @@ def ex_rates(k,T,a,E):
 def sum_nk(k,T,a,E,km,am,Em,kr,ar,Er,n_m,n_r,NeutralDensity):
     return NeutralDensity*ex_rates(k,T,a,E) + n_m*ex_rates(km,T,am,Em) +  n_r*ex_rates(kr,T,ar,Er)
 
-def sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity):
+def sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad):
     sum_750=sum_nk(kG_750,ElectronTemperature,alphaG_750,EG_750,kM_750,alphaM_750,EM_750,kR_750,alphaR_750,ER_750,MetastableDensity,ResonantDensity,NeutralDensity)
     sum_751=sum_nk(kG_751,ElectronTemperature,alphaG_751,EG_751,kM_751,alphaM_751,EM_751,kR_751,alphaR_751,ER_751,MetastableDensity,ResonantDensity,NeutralDensity)
-    BF_750_751 = sum_750 + sum_751
+    R_750 = Rad[0]
+    R_751 = Rad[4]
+    BF_750_751 = (R_750*sum_750) + (R_751*sum_751)
     return BF_750_751
-
-def LR_mod(k,T,a,E,km,am,Em,kr,ar,Er,Rij,Rmn,n_m,n_r):
-    LR = (Rij/Rmn)*((sum_nk(k,T,a,E,km,am,Em,kr,ar,Er,n_m,n_r)/sum_750(T)))
-    return LR
 
 def LR_738(ElectronTemperature,ResonantDensity,MetastableDensity,Rad,NeutralDensity):
     R_738 = Rad[2]
-    R_750 = Rad[0]
-    return (R_738/R_750)*((sum_nk(kG_738,ElectronTemperature,alphaG_738,EG_738,kM_738,alphaM_738,EM_738,kR_738,alphaR_738,ER_738,MetastableDensity,ResonantDensity,NeutralDensity)/sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity)))
+    BF_738 = R_738*(sum_nk(kG_738,ElectronTemperature,alphaG_738,EG_738,kM_738,alphaM_738,EM_738,kR_738,alphaR_738,ER_738,MetastableDensity,ResonantDensity,NeutralDensity))
+    return ((BF_738/sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad)))
     
 def LR_763(ElectronTemperature,ResonantDensity,MetastableDensity,Rad,NeutralDensity):
     R_763 = Rad[5]
-    R_750 = Rad[0]
-    return (R_763/R_750)*((sum_nk(kG_763,ElectronTemperature,alphaG_763,EG_763,kM_763,alphaM_763,EM_763,kR_763,alphaR_763,ER_763,MetastableDensity,ResonantDensity,NeutralDensity)/sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity)))
+    BF_763 = R_763*(sum_nk(kG_763,ElectronTemperature,alphaG_763,EG_763,kM_763,alphaM_763,EM_763,kR_763,alphaR_763,ER_763,MetastableDensity,ResonantDensity,NeutralDensity))
+    return BF_763/(sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad))
 
 def LR_772(ElectronTemperature,ResonantDensity,MetastableDensity,Rad,NeutralDensity):
-    R_772 = (Rad[1]+Rad[6])/2
-    R_750 = Rad[0]
-    
-    BF_772_3 = sum_nk(kG_772,ElectronTemperature,alphaG_772,EG_772,kM_772,alphaM_772,EM_772,kR_772,alphaR_772,ER_772,MetastableDensity,ResonantDensity,NeutralDensity)/sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity)
-    BF_772_4 = sum_nk(kG_772_4,ElectronTemperature,alphaG_772_4,EG_772_4,kM_772_4,alphaM_772_4,EM_772_4,kR_772_4,alphaR_772_4,ER_772_4,MetastableDensity,ResonantDensity,NeutralDensity)/sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity)
+    R_772_3 = Rad[6]
+    R_772_4 = Rad[1]
+    BF_772_3 = R_772_3*(sum_nk(kG_772,ElectronTemperature,alphaG_772,EG_772,kM_772,alphaM_772,EM_772,kR_772,alphaR_772,ER_772,MetastableDensity,ResonantDensity,NeutralDensity))
+    BF_772_4 = R_772_4*(sum_nk(kG_772_4,ElectronTemperature,alphaG_772_4,EG_772_4,kM_772_4,alphaM_772_4,EM_772_4,kR_772_4,alphaR_772_4,ER_772_4,MetastableDensity,ResonantDensity,NeutralDensity))
     BF_772 = BF_772_3 + BF_772_4
-    return (R_772/R_750)*(BF_772)
+    return BF_772/(sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad))
 
 def LR_794(ElectronTemperature,ResonantDensity,MetastableDensity,Rad,NeutralDensity):
     R_794 = Rad[3]
-    R_750 = Rad[0]
-    return (R_794/R_750)*((sum_nk(kG_795,ElectronTemperature,alphaG_795,EG_795,kM_795,alphaM_795,EM_795,kR_795,alphaR_795,ER_795,MetastableDensity,ResonantDensity,NeutralDensity)/sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity)))
+    BF_794 = R_794*(sum_nk(kG_795,ElectronTemperature,alphaG_795,EG_795,kM_795,alphaM_795,EM_795,kR_795,alphaR_795,ER_795,MetastableDensity,ResonantDensity,NeutralDensity))
+    return BF_794/(sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad))
 
 ElectronTemperatureLineRatios = [(738,750),(763,750),(772,750)]    
 
