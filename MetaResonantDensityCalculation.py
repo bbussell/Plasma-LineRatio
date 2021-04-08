@@ -150,8 +150,14 @@ def FindMinimumLossFromAllResults(ModelResonantDensity,ModelMetastableDensity,Fu
           'where n1s4 = ',"%7.1e" % ResonantDensityList[MinimumChiSquaredIndex], 'cm\u00b3', 'and MetastableDensityIncm3 = ',
           "%7.1e" % MetastableDensityList[MinimumChiSquaredIndex], 'cm\u00b3') 
     
-    FinalResonantDensity = ResonantDensityList[MinimumChiSquaredIndex]
-    FinalMetastableDensity = MetastableDensityList[MinimumChiSquaredIndex]
+    ResonantDensity_n1s2 = ResonantDensityList[MinimumChiSquaredIndex]
+    ResonantDensity_n1s4 = ResonantDensityList[MinimumChiSquaredIndex]
+    MetastableDensity_n1s3 = (MetastableDensityList[MinimumChiSquaredIndex])/6.5
+    MetastableDensity_n1s5 = MetastableDensityList[MinimumChiSquaredIndex]
+    FinalResonantDensity = ResonantDensity_n1s4 + ResonantDensity_n1s2 
+    FinalMetastableDensity = MetastableDensity_n1s5 + MetastableDensity_n1s3 
+    
+
     FinalCalculatedDensity = [FinalResonantDensity,FinalMetastableDensity]
     FinalLoss = min(FullChiSquared)
     
