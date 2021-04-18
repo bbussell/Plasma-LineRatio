@@ -26,7 +26,7 @@ def FetchSpectra(filename,path):
     
     return Wavelength, InterpolatedSpectrum
 
-def Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum,include772):
+def Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum,LowerBackgroundPeakLimit,UpperBackgroundPeakLimit):
     RawAreaOfPeak = InterpolatedSpectrum.integral(LowerPeakLimit,UpperPeakLimit)
     PeakAreaMinusBackground = 0
     # if include772 == 0:
@@ -35,8 +35,8 @@ def Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum,in
     #     LowerIrradianceWithEdgeCorrection = 0
     #     UpperIrradianceWithEdgeCorrection = 0 
     # else:
-    LowerIrradianceWithEdgeCorrection = 0.95*(InterpolatedSpectrum(LowerPeakLimit))
-    UpperIrradianceWithEdgeCorrection = 0.95*(InterpolatedSpectrum(UpperPeakLimit))
+    LowerIrradianceWithEdgeCorrection = 0.95*(InterpolatedSpectrum(LowerBackgroundPeakLimit))
+    UpperIrradianceWithEdgeCorrection = 0.95*(InterpolatedSpectrum(UpperBackgroundPeakLimit))
     # print("The lower peak limit is: ",InterpolatedSpectrum(LowerPeakLimit))
     # print("The lower peak limit with edge correction is: ",LowerIrradianceWithEdgeCorrection)
     # print("")
@@ -78,47 +78,43 @@ def Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum,in
     return PeakAreaMinusBackground, LowerIrradianceWithEdgeCorrection, UpperIrradianceWithEdgeCorrection, RawAreaOfPeak
 
 def SaveBackgroundCorrectedIrradianceToFile(EmissionPeakArray,array,File):
+    print("The final irradiance array sent to this function is: ", array)
     BackgroundCorrectedSpectra = pd.DataFrame(EmissionPeakArray,columns=["Wavelength"])
    # print("The background corrected wavelength is: ", BackgroundCorrectedSpectra)
     BackgroundCorrectedSpectra['Background Corrected Irradiance']=pd.Series(array)
-    #print("The irradiance array is: ", array)
-    #print("")
-    #print("The backround corrected spectra, including irradiance is: ", BackgroundCorrectedSpectra)
+    print("The irradiance array to be printed is: ", array)
+    print("")
+    print("The backround corrected spectra, including irradiance is: ", BackgroundCorrectedSpectra)
     
     with open(File+'_IntegratedIntensity.txt', 'w') as resultsfile:
         resultsfile.write('Datafile: '+File+'\n')   
     BackgroundCorrectedSpectra.to_csv(File+'_IntegratedIntensity.txt', index=False,mode="a")  
     return BackgroundCorrectedSpectra
 
-
-def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum,File):
-    EmissionPeakArray = [696,706,714,727,738,794,750,763,772,383,360,480]
-    EmissionPeakLimits = [(694.8,700.3),(704.8,709.4),(713.7,716.7),(725.5,730),(736.1,740.9),(793.2,797.29),(745.1,757.9),(760.4,769.3),(770.7,775),(382.17,383.4),(360,361.2),(478.45,483.07)]
-    EmissionPeakPlotLimits = [(691,701),(704,710),(711,720),(724.5,731),(732,746),(785,810),(744,760),(756,770),(767,780),(381,384.5),(358,363),(475,485)]
+def PlotPeakAndBackground(Wavelength, InterpolatedSpectrum,EmissionPeakArray,array):
+    EmissionPeakLimits = [(694.8,700.3),(704.8,709.4)]#,(713.7,716.7),(725.5,730),(736.1,740.9),(793.2,797.29),(745.1,757.9),(760.4,769.3),(770.7,775),(382.17,383.4),(360,361.2),(478.45,483.07)]
+    EmissionPeakPlotLimits = [(691,701),(704,710)]#,(711,720),(724.5,731),(732,746),(785,810),(744,760),(756,770),(767,780),(381,384.5),(358,363),(475,485)]
+    InitialBackgroundPeakLimits = [(694.8,700.3),(704.8,709.4)]#,(713.7,716.7),(725.5,730),(736.1,740.9),(793.2,797.29),(745.1,757.9),(760.4,769.3),(770.7,775),(382.17,383.4),(360,361.2),(478.45,483.07)]
     
     PeakPlots_x = [Wavelength,Wavelength,Wavelength,Wavelength,Wavelength,Wavelength,Wavelength,Wavelength,Wavelength,Wavelength,Wavelength,Wavelength]
     y = InterpolatedSpectrum(Wavelength)
     print(y)
     PeakPlots_y = [y,y,y,y,y,y,y,y,y,y,y,y]
-    array = []
     
-    # fig, axes = plt.subplots(1)
-    # #axes = plt.subplot()
-    # axes.plot(PeakPlots_x[0],PeakPlots_y[1])
-    # axes.set_ylim(0,0.05)
-    # plt.show()
-    
-    
-    for i, plotlimit,PeakLimit,EmissionPeak in zip(range(len(PeakPlots_x)),EmissionPeakPlotLimits,EmissionPeakLimits,EmissionPeakArray):
-    
-        
+    for i, plotlimit,PeakLimit,EmissionPeak,InitialPeakBackgroundLimit in zip(range(len(PeakPlots_x)),EmissionPeakPlotLimits,EmissionPeakLimits,EmissionPeakArray,InitialBackgroundPeakLimits):
         LowerPeakLimit = PeakLimit[0]
         UpperPeakLimit = PeakLimit[1]
-        BackgroundCalculationResult = (Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum,0))
-        PeakAreaMinusBackground = BackgroundCalculationResult[0]
-        LowerIrradianceWithEdgeCorrection = BackgroundCalculationResult[2]
+        LowerBackgroundPeakLimit = InitialPeakBackgroundLimit[0]
+        UpperBackgroundPeakLimit = InitialPeakBackgroundLimit[1]
+        
+        print("")
+        print("This is the initial peak background result for Emission Peak: ",EmissionPeak)
+        print("")
+        InitialBackgroundCalculationResult = (Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum,LowerBackgroundPeakLimit,UpperBackgroundPeakLimit))
+        PeakAreaMinusBackground = InitialBackgroundCalculationResult[0]
+        LowerIrradianceWithEdgeCorrection = InitialBackgroundCalculationResult[1]
          #BackgroundCalculationResult[1]
-        UpperIrradianceWithEdgeCorrection = BackgroundCalculationResult[2]    
+        UpperIrradianceWithEdgeCorrection = InitialBackgroundCalculationResult[2]    
     
         fig = plt.figure()
         axes = plt.subplot()
@@ -140,21 +136,24 @@ def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum,File):
         plt.show()
         
         
-        print("The spectra minus background is: ", PeakAreaMinusBackground)
+        print("The initial background corrected area is: ", PeakAreaMinusBackground)
+        print("")
         UserDecisionOnBackground = input("Are you happy with the background area limits? Answer yes OR no and press Enter" )
         
         if UserDecisionOnBackground == 'yes':
-            break
+            pass
         elif UserDecisionOnBackground == 'no':
-            NewLowerPeakLimit = float(input("Please enter your choice for the lower peak limit"))
-            print("The lower peak limit you have chosen is: ", NewLowerPeakLimit)
-            NewUpperPeakLimit = float(input("Please enter your choice for the upper peak limit")) 
-            print("The upper peak limit you have chosen is: ", NewUpperPeakLimit)
+            NewLowerBackgroundPeakLimit = float(input("Please enter your choice for the lower peak limit"))
+            print("The lower peak limit you have chosen is: ", NewLowerBackgroundPeakLimit)
+            NewUpperBackgroundPeakLimit = float(input("Please enter your choice for the upper peak limit")) 
+            print("The upper peak limit you have chosen is: ", NewUpperBackgroundPeakLimit)
             print()
-            print("the data type of lower limit is: ", type(NewLowerPeakLimit))
+            print("the data type of lower limit is: ", type(NewLowerBackgroundPeakLimit))
             
             print("Calculating new background with your chosen limits")
-            BackgroundCalculationResult = (Background_Calculation(NewLowerPeakLimit,NewUpperPeakLimit,InterpolatedSpectrum,0))
+            print("")
+            print("The second background calculation result is: ")
+            BackgroundCalculationResult = (Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum,NewLowerBackgroundPeakLimit,NewUpperBackgroundPeakLimit))
             PeakAreaMinusBackground = BackgroundCalculationResult[0]
             LowerIrradianceWithEdgeCorrection = BackgroundCalculationResult[2]
          #BackgroundCalculationResult[1]
@@ -164,45 +163,39 @@ def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum,File):
             print("Your answer was not 'yes' or 'no', please amend your response")
             UserDecisionOnBackground = input("Are you happy with the background area limits? Answer yes OR no and press Enter" )
             print("")
-            BackgroundCalculationResult = (Background_Calculation(NewLowerPeakLimit,NewUpperPeakLimit,InterpolatedSpectrum,0))
-            PeakAreaMinusBackground = BackgroundCalculationResult[0]
-            LowerIrradianceWithEdgeCorrection = BackgroundCalculationResult[2]
-           #BackgroundCalculationResult[1]
-            UpperIrradianceWithEdgeCorrection = BackgroundCalculationResult[2]  
+            if UserDecisionOnBackground == 'yes':
+                break
+            elif UserDecisionOnBackground == 'no':
+                NewLowerBackgroundPeakLimit = float(input("Please enter your choice for the lower peak limit"))
+                print("The lower peak limit you have chosen is: ", NewLowerBackgroundPeakLimit)
+                NewUpperBackgroundPeakLimit = float(input("Please enter your choice for the upper peak limit")) 
+                print("The upper peak limit you have chosen is: ", NewUpperBackgroundPeakLimit)
+                print()
+                print("the data type of lower limit is: ", type(NewLowerBackgroundPeakLimit))
+                
+                print("Calculating new background with your chosen limits")
+                print("")
+                print("The second background calculation result is: ")
+                BackgroundCalculationResult = (Background_Calculation(LowerPeakLimit,UpperPeakLimit,InterpolatedSpectrum,NewLowerBackgroundPeakLimit,NewUpperBackgroundPeakLimit))
+                PeakAreaMinusBackground = BackgroundCalculationResult[0]
+                LowerIrradianceWithEdgeCorrection = BackgroundCalculationResult[2]
+             #BackgroundCalculationResult[1]
+                UpperIrradianceWithEdgeCorrection = BackgroundCalculationResult[2]
+        array.append(PeakAreaMinusBackground)
+        print("")
+        print("The Irradiance array for this result is: ",array)
         
-    BackgroundCorrectedSpectra = SaveBackgroundCorrectedIrradianceToFile(EmissionPeakArray, array, File)
+    return PeakAreaMinusBackground, LowerIrradianceWithEdgeCorrection, UpperIrradianceWithEdgeCorrection, array
+
+def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum,File):
+    array = []
+    EmissionPeakArray = [696,706]#,714,727,738,794,750,763,772,383,360,480]
+    BackgroundCheckResult = PlotPeakAndBackground(Wavelength, InterpolatedSpectrum,EmissionPeakArray,array)
+    PeakAreaMinusBackground = BackgroundCheckResult[0]
+    FinalArray = BackgroundCheckResult[3]
+    BackgroundCorrectedSpectra = SaveBackgroundCorrectedIrradianceToFile(EmissionPeakArray, FinalArray, File)
 
     return PeakAreaMinusBackground, BackgroundCorrectedSpectra
-
-# fig_696, ax696 = plt.subplots()
-# print('you have created figure 696')
-# fig_706, ax706 = plt.subplots()
-# print('you have made figure 706')
-# fig_714, ax714 = plt.subplots()
-# fig_727, ax727 = plt.subplots()
-# fig_738, ax738 = plt.subplots()
-# fig_794, ax794 =plt.subplots()
-# fig_750, ax750 =plt.subplots()
-# fig_763, ax763 = plt.subplots()
-# fig_772, ax772 =plt.subplots()
-# fig_383, ax383 = plt.subplots()
-# fig_360, ax360 =plt.subplots()
-# fig_480, ax480 = plt.subplots()
-# plt_714, ax714 = plt.subplots()
-
-#fig_706 = plt.figure()
-# plot_696 = plt.axes()
-# plot_706 = plt.axes()
-# plot_714 = plt.axes()
-# plot_727 = plt.axes()
-# plot_738 = plt.axes()
-# plot_794 = plt.axes()
-# plot_750 = plt.axes()
-# plot_763 = plt.axes()
-# plot_772 = plt.axes()
-# plot_383 = plt.axes()
-# plot_360 = plt.axes()
-# plot_480 = plt.axes()
 
 # MetastablePeakFig, axes = plt.subplots(nrows=2,ncols=3,sharey=True)
 # ax696, ax706, ax714, ax727, ax738, ax794 = axes.flatten()
@@ -215,7 +208,6 @@ path = r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\181220'
 SpectraResult = FetchSpectra(filename,path)
 Wavelength = SpectraResult[0]
 InterpolatedSpectrum = SpectraResult[1]
-
 BackgroundResult = BackgroundCalculationSeries(Wavelength, InterpolatedSpectrum,filename)
 PeakAreaMinusBackground = BackgroundResult[0]
 BackgroundCorrectedSpectra = BackgroundResult[1]
