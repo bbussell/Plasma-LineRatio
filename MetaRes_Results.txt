@@ -1,0 +1,8 @@
+Metastable and Resonant Density Model Results
+Datetime (Y-M-S) = 2021-04-20-13-38-54
+Filename:5050PLSCHAMBERINLET_CHAMBERPOS_RF0008
+Experiment Name: T13_RF_5050_Repeat
+Gas Temperature (K) = 600
+Characteristic length (cm) = 5.0
+ResonantDensityIncm3_n1s2 ResonantDensityIncm3_n1s4 MetastableDensityIncm3_n1s3 MetastableDensity_n1s5 Chi-Squared 
+2.32e+10 2.32e+10 9.58e+09 6.23e+10 2.80

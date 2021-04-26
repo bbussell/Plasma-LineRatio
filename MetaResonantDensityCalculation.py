@@ -110,14 +110,14 @@ def CalculateNeutralDensity():
     print("the neutral density, calculated using PP, is: ", "%4.2e" % NeutralDensity)
     return NeutralDensity
 
-def PrepareIntegratedIntensity(File):
-    SpectraResult = FetchSpectra(File)
+def PrepareIntegratedIntensity(File,path):
+    SpectraResult = FetchSpectra(File,path)
     Wavelength = SpectraResult[0]
     InterpolatedSpectrum = SpectraResult[1]
     BackgroundCalculationSeries(Wavelength, InterpolatedSpectrum, File)    
     WavelengthInNm, NormalisedIrradiance = np.loadtxt(File+'_IntegratedIntensity.txt', comments='#', delimiter=',', skiprows=2, unpack=True, 
                                         usecols=(0,1))
-    os.chdir(r'..\..\..\Plasma Spec Code\Plasma-LineRatio')
+    os.chdir(r'..\..\..\Plasma Spec Code\RefactDevelopment\Plasma-LineRatio')
     return NormalisedIrradiance    
 
 def CompareModelAndExperimentalLR(n_1s3,n_1s4,n_1s5,CharacteristicLength,File,NormalisedIrradiance):  
@@ -158,7 +158,7 @@ def FindMinimumLossFromAllResults(ModelResonantDensity,ModelMetastableDensity,Fu
     FinalMetastableDensity = MetastableDensity_n1s5 + MetastableDensity_n1s3 
     
 
-    FinalCalculatedDensity = [FinalResonantDensity,FinalMetastableDensity]
+    FinalCalculatedDensity = [ResonantDensity_n1s4,MetastableDensity_n1s5]
     FinalLoss = min(FullChiSquared)
     
     with open('MetaRes_Results.txt', 'w+') as finalresults:
@@ -170,14 +170,14 @@ def FindMinimumLossFromAllResults(ModelResonantDensity,ModelMetastableDensity,Fu
          finalresults.write('Experiment Name: ' + ExperimentalParameter + '\n')
          finalresults.write('Gas Temperature (K) = ' + GasTemperatureInKelvin_str + '\n')
          finalresults.write('Characteristic length (cm) = '+ CharacteristicLength_str + '\n')
-         finalresults.write('ResonantDensityIncm3 MetastableDensityIncm3 Chi-Squared \n')
-         finalresults.write("%7.2e %7.2e %4.2f\n" % (FinalResonantDensity,FinalMetastableDensity,FinalLoss))
+         finalresults.write('ResonantDensityIncm3_n1s2 ResonantDensityIncm3_n1s4 MetastableDensityIncm3_n1s3 MetastableDensity_n1s5 Chi-Squared \n')
+         finalresults.write("%7.2e %7.2e %7.2e %7.2e %4.2f\n" % (ResonantDensity_n1s2,ResonantDensity_n1s4,MetastableDensity_n1s3,MetastableDensity_n1s5,FinalLoss))
     
     return FinalCalculatedDensity
 
 
-def ModelMetastableAndResonantDensity(ResonantDensityIncm3,MetastableDensityIncm3,File,ExperimentalParameter):
-    NormalisedIrradiance = PrepareIntegratedIntensity(File)
+def ModelMetastableAndResonantDensity(ResonantDensityIncm3,MetastableDensityIncm3,File,ExperimentalParameter,path):
+    NormalisedIrradiance = PrepareIntegratedIntensity(File,path)
     for ResonantModelValue, MetastableModelValue in zip(ResonantDensityIncm3,MetastableDensityIncm3):
         
         n_1s4 = ResonantModelValue #resonant density (cm^-3)      

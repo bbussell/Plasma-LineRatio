@@ -120,7 +120,7 @@ def PlotPeakAndBackground(Wavelength, InterpolatedSpectrum,EmissionPeakArray,arr
         axes = plt.subplot()
         axes.plot(PeakPlots_x[i],PeakPlots_y[i])
         axes.set_xlim(plotlimit[0],plotlimit[1])
-        axes.set_ylim(0,0.015)
+        axes.set_ylim(0,0.02)
         axes.set_title(' Initial Background Fitting for '+ (str(EmissionPeak)))
         axes.set_xlabel("Wavelength (nm)", fontsize=10)
         axes.set_ylabel("Irradiance", fontsize=10)
@@ -175,7 +175,7 @@ def PlotPeakAndBackground(Wavelength, InterpolatedSpectrum,EmissionPeakArray,arr
             Newaxes = plt.subplot()
             Newaxes.plot(PeakPlots_x[i],PeakPlots_y[i])
             Newaxes.set_xlim(plotlimit[0],plotlimit[1])
-            Newaxes.set_ylim(0,0.015)
+            Newaxes.set_ylim(0,0.02)
             Newaxes.set_title('New Background Choice for '+str(EmissionPeak))
             Newaxes.set_xlabel("Wavelength (nm)", fontsize=10)
             Newaxes.set_ylabel("Irradiance", fontsize=10)
@@ -241,13 +241,13 @@ def BackgroundCalculationSeries(Wavelength,InterpolatedSpectrum,File):
 # AllOtherPeaksFig, axes = plt.subplots(nrows=2,ncols=3,sharey=True)
 # ax750, ax763, ax772, ax383, ax360, ax480 = axes.flatten()
 
-filename='RFPOWER0001'
-path = r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\181220'
-SpectraResult = FetchSpectra(filename,path)
-Wavelength = SpectraResult[0]
-InterpolatedSpectrum = SpectraResult[1]
-BackgroundResult = BackgroundCalculationSeries(Wavelength, InterpolatedSpectrum,filename)
-PeakAreaMinusBackground = BackgroundResult[0]
-BackgroundCorrectedSpectra = BackgroundResult[1]
+# filename='RFPOWER0001'
+# path = r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\181220'
+# SpectraResult = FetchSpectra(filename,path)
+# Wavelength = SpectraResult[0]
+# InterpolatedSpectrum = SpectraResult[1]
+# BackgroundResult = BackgroundCalculationSeries(Wavelength, InterpolatedSpectrum,filename)
+# PeakAreaMinusBackground = BackgroundResult[0]
+# BackgroundCorrectedSpectra = BackgroundResult[1]
 
 

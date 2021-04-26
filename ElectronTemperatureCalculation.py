@@ -207,6 +207,10 @@ def sum_nk(k,T,a,E,km,am,Em,kr,ar,Er,n_m,n_r,NeutralDensity):
     return NeutralDensity*ex_rates(k,T,a,E) + n_m*ex_rates(km,T,am,Em) +  n_r*ex_rates(kr,T,ar,Er)
 
 def sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad):
+    ResonantDensity_n1s2 = ResonantDensity
+    MetastableDensity_n1s3 = MetastableDensity/6.5
+    EffectiveResonantDensity = ResonantDensity + ResonantDensity_n1s2
+    EffectiveMetastableDensity = MetastableDensity + MetastableDensity_n1s3
     sum_750=sum_nk(kG_750,ElectronTemperature,alphaG_750,EG_750,kM_750,alphaM_750,EM_750,kR_750,alphaR_750,ER_750,MetastableDensity,ResonantDensity,NeutralDensity)
     sum_751=sum_nk(kG_751,ElectronTemperature,alphaG_751,EG_751,kM_751,alphaM_751,EM_751,kR_751,alphaR_751,ER_751,MetastableDensity,ResonantDensity,NeutralDensity)
     R_750 = Rad[0]
@@ -215,16 +219,28 @@ def sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity
     return BF_750_751
 
 def LR_738(ElectronTemperature,ResonantDensity,MetastableDensity,Rad,NeutralDensity):
+    ResonantDensity_n1s2 = ResonantDensity
+    MetastableDensity_n1s3 = MetastableDensity/6.5
+    EffectiveResonantDensity = ResonantDensity + ResonantDensity_n1s2
+    EffectiveMetastableDensity = MetastableDensity + MetastableDensity_n1s3
     R_738 = Rad[2]
     BF_738 = R_738*(sum_nk(kG_738,ElectronTemperature,alphaG_738,EG_738,kM_738,alphaM_738,EM_738,kR_738,alphaR_738,ER_738,MetastableDensity,ResonantDensity,NeutralDensity))
     return ((BF_738/sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad)))
     
 def LR_763(ElectronTemperature,ResonantDensity,MetastableDensity,Rad,NeutralDensity):
+    ResonantDensity_n1s2 = ResonantDensity
+    MetastableDensity_n1s3 = MetastableDensity/6.5
+    EffectiveResonantDensity = ResonantDensity + ResonantDensity_n1s2
+    EffectiveMetastableDensity = MetastableDensity + MetastableDensity_n1s3
     R_763 = Rad[5]
     BF_763 = R_763*(sum_nk(kG_763,ElectronTemperature,alphaG_763,EG_763,kM_763,alphaM_763,EM_763,kR_763,alphaR_763,ER_763,MetastableDensity,ResonantDensity,NeutralDensity))
     return BF_763/(sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad))
 
 def LR_772(ElectronTemperature,ResonantDensity,MetastableDensity,Rad,NeutralDensity):
+    ResonantDensity_n1s2 = ResonantDensity
+    MetastableDensity_n1s3 = MetastableDensity/6.5
+    EffectiveResonantDensity = ResonantDensity + ResonantDensity_n1s2
+    EffectiveMetastableDensity = MetastableDensity + MetastableDensity_n1s3
     R_772_3 = Rad[6]
     R_772_4 = Rad[1]
     BF_772_3 = R_772_3*(sum_nk(kG_772,ElectronTemperature,alphaG_772,EG_772,kM_772,alphaM_772,EM_772,kR_772,alphaR_772,ER_772,MetastableDensity,ResonantDensity,NeutralDensity))
@@ -233,6 +249,10 @@ def LR_772(ElectronTemperature,ResonantDensity,MetastableDensity,Rad,NeutralDens
     return BF_772/(sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad))
 
 def LR_794(ElectronTemperature,ResonantDensity,MetastableDensity,Rad,NeutralDensity):
+    ResonantDensity_n1s2 = ResonantDensity
+    MetastableDensity_n1s3 = MetastableDensity/6.5
+    EffectiveResonantDensity = ResonantDensity + ResonantDensity_n1s2
+    EffectiveMetastableDensity = MetastableDensity + MetastableDensity_n1s3
     R_794 = Rad[3]
     BF_794 = R_794*(sum_nk(kG_795,ElectronTemperature,alphaG_795,EG_795,kM_795,alphaM_795,EM_795,kR_795,alphaR_795,ER_795,MetastableDensity,ResonantDensity,NeutralDensity))
     return BF_794/(sum_750(ElectronTemperature,ResonantDensity,MetastableDensity,NeutralDensity,Rad))
@@ -285,11 +305,12 @@ def CalculateElectronTemperature(ElectronTemperatureInputs,FinalCalculatedDensit
             te_results.write("%4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f\n" % (ElectronTemperatureValue,ChiSqr_738, ChiSqr_763, ChiSqr_772, ChiSqr_794, ChiSqr_All, ChiSqr_Excluding772))
             
         with open("LR_results.txt", 'a+') as lr_results:
-            lr_results.write("%4.2f %5.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3fn" % (ElectronTemperatureValue,ModelLineRatio_738,ExperimentalLineRatio_738,ModelLineRatio_763,ExperimentalLineRatio_763,ModelLineRatio_772,ExperimentalLineRatio_772,ModelLineRatio_794,ExperimentalLineRatio_794))
+            lr_results.write("%4.2f %5.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f \n" % (ElectronTemperatureValue,ModelLineRatio_738,ExperimentalLineRatio_738,ModelLineRatio_763,ExperimentalLineRatio_763,ModelLineRatio_772,ExperimentalLineRatio_772,ModelLineRatio_794,ExperimentalLineRatio_794))
                 
 def FindMinimumLoss():
     
     ElectronTemperature, ChiSqr_738, ChiSqr_763, ChiSqr_772, ChiSqr_794, ChiSqr_All, ChiSqr_Excluding772 = np.genfromtxt("Te_results.txt", delimiter=" ", skip_header=6, unpack=True, usecols=(0,1,2,3,4,5,6))
+    ElectronTemperatureLst = list(ElectronTemperature)
     ChiSqrList_738 = list(ChiSqr_738)
     ChiSqrList_763 = list(ChiSqr_763)
     ChiSqrList_772 = list(ChiSqr_772)
@@ -297,16 +318,23 @@ def FindMinimumLoss():
     ChiSqrList_All = list(ChiSqr_All)
     ChiSqrList_Excluding772 = list(ChiSqr_Excluding772)
     
+    SecondMinima_Te = ElectronTemperatureLst[70:]
+    SecondMinimaLst_Excluding772 = ChiSqrList_Excluding772[70:]
+    # print("second minima list:")
+    # print(SecondMinimaLst_Excluding772)
+    # print("")
+    SecondMinimaArray_Excluding772 = np.array(SecondMinimaLst_Excluding772)
+    
     print('------------------------------------------------------------------')
     print("The minimum in X^2 for all lines is: ", ChiSqrList_All[ChiSqrList_All.index(min(ChiSqrList_All))], "occurring when Te=", ElectronTemperature[ChiSqrList_All.index(min(ChiSqrList_All))])
-    print("The minimum in X^2 for all excluding 772nm is: ", ChiSqrList_Excluding772[ChiSqrList_Excluding772.index(min(ChiSqrList_Excluding772))], "occurring when Te=", ElectronTemperature[ChiSqrList_Excluding772.index(min(ChiSqrList_Excluding772))])
+    print("The minimum in X^2 for all excluding 772nm is: ", SecondMinimaLst_Excluding772[SecondMinimaLst_Excluding772.index(min(SecondMinimaLst_Excluding772))], "occurring when Te=", SecondMinima_Te[SecondMinimaLst_Excluding772.index(min(SecondMinimaLst_Excluding772))])
     print("The minimum in X^2 for 738nm is: ", ChiSqrList_738[ChiSqrList_738.index(min(ChiSqrList_738))], "occuring when Te=", ElectronTemperature[ChiSqrList_738.index(min(ChiSqrList_738))])
     print("The minimum in X^2 for 763nm is: ", ChiSqrList_763[ChiSqrList_763.index(min(ChiSqrList_763))], "occuring when Te=", ElectronTemperature[ChiSqrList_763.index(min(ChiSqrList_763))])
     print("The minimum in X^2 for 772nm is: ", ChiSqrList_772[ChiSqrList_772.index(min(ChiSqrList_772))], "occuring when Te=", ElectronTemperature[ChiSqrList_772.index(min(ChiSqrList_772))])
     print("The minimum in X^2 for 794nm is: ", ChiSqrList_794[ChiSqrList_794.index(min(ChiSqrList_794))], "occuring when Te=", ElectronTemperature[ChiSqrList_794.index(min(ChiSqrList_794))])
     
-    ModelResultsInArrayFormat = [ElectronTemperature,ChiSqr_738,ChiSqr_763,ChiSqr_772, ChiSqr_794, ChiSqr_All, ChiSqr_Excluding772]
-    ModelResultsInListFormat = [ElectronTemperature,ChiSqrList_738,ChiSqrList_763,ChiSqrList_772,ChiSqrList_794,ChiSqrList_All,ChiSqrList_Excluding772]
+    ModelResultsInArrayFormat = [ElectronTemperature,ChiSqr_738,ChiSqr_763,ChiSqr_772, ChiSqr_794, ChiSqr_All,ChiSqr_Excluding772,SecondMinimaArray_Excluding772]
+    ModelResultsInListFormat = [ElectronTemperature,ChiSqrList_738,ChiSqrList_763,ChiSqrList_772,ChiSqrList_794,ChiSqrList_All,ChiSqrList_Excluding772,SecondMinimaLst_Excluding772,SecondMinima_Te]
     
     return ModelResultsInArrayFormat, ModelResultsInListFormat
 
@@ -324,13 +352,26 @@ def PlotLoss(File,ExperimentalParameter,GasTemperatureInKelvin_str):
     ax.plot(ElectronTemperature,ModelResultsInArrayFormat[4],c='y',label='X^2 for 794/750nm')
     ax.plot(ElectronTemperature,ModelResultsInArrayFormat[5],c='magenta',label='X^2 for all lines')
     ax.plot(ElectronTemperature,ModelResultsInArrayFormat[6],c='orange',label='X^2 for all excl. 772nm')    
-    plt.legend(loc='upper right');
+    ax.set_title('Effective Electron Temperature Chi-Sqruared '+ (str(File)))
+    ax.set_xlabel("Electron Temperature (eV)", fontsize=10)
+    ax.set_ylabel("Chi-Squared", fontsize=10)
+    plt.legend(loc='upper right'); 
     ax.set_ylim([0,100])
     plt.show()
     
     os.rename("Te_results.txt", time.strftime("TeResults/te_results"+File+ExperimentalParameter+GasTemperatureInKelvin_str+"K_%Y%m%d%H%M%S.txt")) 
     os.rename("LR_results.txt", time.strftime("TeResults/LR_results"+File+ExperimentalParameter+GasTemperatureInKelvin_str+"_%Y%m%d%H%M%S.txt"))    
-    
-    FinalCalculatedElectronTemperature = [ElectronTemperature[ModelResultsInListFormat[5].index(min(ModelResultsInListFormat[5]))], ElectronTemperature[ModelResultsInListFormat[6].index(min(ModelResultsInListFormat[6]))]]
+    SecondMinima_Te = ModelResultsInListFormat[8] 
+    #print(SecondMinima_Te)
+    FinalCalculatedElectronTemperature = [ElectronTemperature[ModelResultsInListFormat[5].index(min(ModelResultsInListFormat[5]))], SecondMinima_Te[ModelResultsInListFormat[7].index(min(ModelResultsInListFormat[7]))]]
     
     return FinalCalculatedElectronTemperature
+
+
+# file='100CHAMBERINLET_RF0010'
+# path = r'C:\Users\beau.bussell\Google Drive\EngD\Research Data\OES\Calibrated\130421'
+# os.chdir(path)
+# ExperimentalParameter = 'test'
+# GasTemperatureInKelvin_str = str(600)
+
+# PlotLoss(file,ExperimentalParameter,GasTemperatureInKelvin_str)

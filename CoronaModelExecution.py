@@ -12,7 +12,6 @@ import os
 from MetaResonantDensityCalculation import ExtractDensityInputs, CalculateNeutralDensity, PrepareResultsFile, ModelMetastableAndResonantDensity
 from ElectronTemperatureCalculation import FetchModelElectronTemperatureInputs,CalculateElectronTemperature,PlotLoss
 from CalculateElectronDensity import CalculateAllElectronDensity, PrintElectronDensityResultsToScreen, PrintElectronDensityResultsToFile
-
 def pause():
     programPause = input("Press the <ENTER> key to continue...")
 
@@ -26,24 +25,44 @@ CharacteristicLength = 5
 GasTemperatureInKelvin_str = str(GasTemperatureInKelvin)
 CharacteristicLength_str = str(CharacteristicLength)
 
-filelist = ['RFPOWER0001',
-            'RFPOWER0005',
-            'RFPOWER0011']
+filelist = [#'5050PLSCHAMBERINLET_CHAMBERPOS_RF0001',
+#              '5050PLSCHAMBERINLET_CHAMBERPOS_RF0002',
+#              '5050PLSCHAMBERINLET_CHAMBERPOS_RF0003',
+#              '5050PLSCHAMBERINLET_CHAMBERPOS_RF0004',
+#              '5050PLSCHAMBERINLET_CHAMBERPOS_RF0005',
+              '5050PLSCHAMBERINLET_CHAMBERPOS_RF0005',
+#              '5050PLSCHAMBERINLET_CHAMBERPOS_RF0007',
+             # '5050PLSCHAMBERINLET_CHAMBERPOS_RF0008',
+              '5050PLSCHAMBERINLET_CHAMBERPOS_RF0008']
+             # '5050PLSCHAMBERINLET_CHAMBERPOS_RF0010']
+            # 'PLS-RF0011',
+            # 'PLS-RF0012']
+            # 'FRONT_RF0002',
+            # 'FRONT_RF0003',
+            # 'FRONT_RF0004',
+            # 'FRONT_RF0005',
+            # 'FRONT_RF0006',
+            # 'FRONT_RF0007',
+            # 'FRONT_RF0008']
+            # 'FRONT_RF0009',
+            # 'FRONT_RF0010',
+            # 'FRONT_RF0011']
 
-ExperimentalParameter = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
-
-print("Thank you. The parameter you are about to evaluate is: ",ExperimentalParameter)
 AllDensityInputValues = ExtractDensityInputs()
 ResonantDensityIncm3 = AllDensityInputValues[0]
 MetastableDensityIncm3 = AllDensityInputValues[1]
+ExperimentalParameter = input("What system parameter was used during this experimental work? is this assessment for? E.g. 2kW or 0.0050 PP. Please respond and press Enter: ")
+print("Thank you. The parameter you are about to evaluate is: ",ExperimentalParameter)
 
 for File in filelist:
-    os.chdir(r'C:\Users\beaub\Google Drive\EngD\Research Data\OES\Calibrated\181220')
+    path = r'C:\Users\beau.bussell\Google Drive\EngD\Research Data\OES\Calibrated\130421'
+    os.chdir(path)
     NeutralDensity = CalculateNeutralDensity()
     PrepareResultsFile(File,ExperimentalParameter)
+    
     print("Results file prepared")
     pause()    
-    FullMetastableModelResults = ModelMetastableAndResonantDensity(ResonantDensityIncm3,MetastableDensityIncm3,File,ExperimentalParameter)
+    FullMetastableModelResults = ModelMetastableAndResonantDensity(ResonantDensityIncm3,MetastableDensityIncm3,File,ExperimentalParameter,path)
     FinalCalculatedDensity = FullMetastableModelResults[0]
     NormalisedIrradiance = FullMetastableModelResults[2]
     print("")
